@@ -1,0 +1,24 @@
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Group all non-major updates together to reduce PR noise
+    groups:
+      non-major:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    # Allow up to 10 open pull requests for npm
+    open-pull-requests-limit: 10
+    # Add reviewers (optional - uncomment and modify as needed)
+    reviewers:
+      - "idanfishman"
+    # Add labels to PRs
+    labels:
+      - "dependencies"
+      - "npm"

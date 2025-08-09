@@ -1,8 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { promises as fs } from "fs";
-import {
-  parsePlaywrightJson,
-} from "../src/index.js";
+import { parsePlaywrightJson } from "../src/index.js";
 import { ValidationError } from "../src/parser/validator.js";
 
 // Mock fs module

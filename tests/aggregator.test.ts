@@ -325,7 +325,6 @@ describe("Statistics Calculator", () => {
 });
 
 describe("Shard Aggregation and Edge Cases", () => {
-
   describe("Validator Integration", () => {
     it("should throw ValidationError with correct format", () => {
       const invalidReport = {

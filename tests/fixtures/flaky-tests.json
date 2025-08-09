@@ -1,0 +1,127 @@
+{
+  "config": {
+    "rootDir": "/project",
+    "projects": [
+      {
+        "name": "chromium"
+      }
+    ]
+  },
+  "suites": [
+    {
+      "title": "Flaky Suite",
+      "specs": [
+        {
+          "title": "flaky.spec.ts",
+          "ok": true,
+          "tests": [
+            {
+              "title": "flaky test that passes on retry",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "failed",
+                      "duration": 1000,
+                      "error": {
+                        "message": "Random failure"
+                      },
+                      "errors": [
+                        {
+                          "message": "Random failure"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2024-01-01T10:00:00.000Z",
+                      "attachments": []
+                    },
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 800,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2024-01-01T10:00:01.000Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "test-1",
+              "retries": 1,
+              "location": {
+                "file": "tests/flaky.spec.ts",
+                "line": 5,
+                "column": 1
+              }
+            },
+            {
+              "title": "test that is skipped",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "description": "Not ready yet"
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "skipped",
+                      "duration": 0,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2024-01-01T10:00:02.000Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "test-2",
+              "retries": 0,
+              "location": {
+                "file": "tests/flaky.spec.ts",
+                "line": 15,
+                "column": 1
+              }
+            }
+          ],
+          "id": "spec-1",
+          "file": "tests/flaky.spec.ts",
+          "line": 1,
+          "column": 0
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "startTime": "2024-01-01T10:00:00.000Z",
+    "endTime": "2024-01-01T10:00:02.000Z",
+    "duration": 2000,
+    "expected": 1,
+    "unexpected": 0,
+    "skipped": 1,
+    "flaky": 1
+  }
+}

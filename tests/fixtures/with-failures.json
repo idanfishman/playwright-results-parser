@@ -1,0 +1,153 @@
+{
+  "config": {
+    "rootDir": "/project",
+    "projects": [
+      {
+        "name": "chromium"
+      },
+      {
+        "name": "firefox"
+      }
+    ]
+  },
+  "suites": [
+    {
+      "title": "Authentication",
+      "file": "tests/auth.spec.ts",
+      "specs": [
+        {
+          "title": "auth.spec.ts",
+          "ok": false,
+          "tests": [
+            {
+              "title": "should login successfully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "failed",
+                      "duration": 5432,
+                      "error": {
+                        "message": "Timeout waiting for selector",
+                        "stack": "Error: Timeout waiting for selector\n    at auth.spec.ts:15:5",
+                        "location": {
+                          "file": "tests/auth.spec.ts",
+                          "line": 15,
+                          "column": 5
+                        }
+                      },
+                      "errors": [
+                        {
+                          "message": "Timeout waiting for selector",
+                          "stack": "Error: Timeout waiting for selector\n    at auth.spec.ts:15:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2024-01-01T10:00:00.000Z",
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "path": "test-results/auth-login-chromium/screenshot.png",
+                          "contentType": "image/png"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                },
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "status": "passed",
+                      "duration": 3210,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2024-01-01T10:00:05.500Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "test-1",
+              "retries": 0,
+              "location": {
+                "file": "tests/auth.spec.ts",
+                "line": 10,
+                "column": 1
+              }
+            },
+            {
+              "title": "should logout successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "slow",
+                      "description": "This test is slow"
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "status": "passed",
+                      "duration": 2100,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2024-01-01T10:00:06.000Z",
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "test-2",
+              "retries": 0,
+              "location": {
+                "file": "tests/auth.spec.ts",
+                "line": 25,
+                "column": 1
+              }
+            }
+          ],
+          "id": "spec-1",
+          "file": "tests/auth.spec.ts",
+          "line": 1,
+          "column": 0
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "startTime": "2024-01-01T10:00:00.000Z",
+    "endTime": "2024-01-01T10:00:08.100Z",
+    "duration": 8100,
+    "expected": 2,
+    "unexpected": 1,
+    "skipped": 0,
+    "flaky": 0
+  }
+}

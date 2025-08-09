@@ -18,9 +18,14 @@ import {
   allTestsPassed,
   hasFailures,
   hasFlakyTests,
+  aggregateShardedRuns,
+  areRunsFromSameExecution,
+  calculateStatistics,
   type NormalizedTestRun,
   type NormalizedTest,
 } from "../src/index.js";
+import { normalizeTestRun } from "../src/parser/normalizer.js";
+import { validatePlaywrightJson, ValidationError } from "../src/parser/validator.js";
 
 describe("Filter Utilities", () => {
   const createTest = (overrides: Partial<NormalizedTest>): NormalizedTest => ({
@@ -438,7 +443,7 @@ describe("Helper Utilities", () => {
       expect(passRate).toBe(50);
     });
 
-    it("should handle zero tests", () => {
+    it("should return 0% pass rate for zero tests", () => {
       const run = createTestRun([]);
       const passRate = calculatePassRate(run);
 
@@ -557,6 +562,334 @@ describe("Helper Utilities", () => {
 
       expect(hasFlakyTests(withFlaky)).toBe(true);
       expect(hasFlakyTests(noFlaky)).toBe(false);
+    });
+  });
+});
+
+describe("Integration Tests", () => {
+  describe("Complex Normalizer Scenarios", () => {
+    it("should normalize complex nested structure with projects in specs", () => {
+      const report = {
+        config: {
+          projects: [{ name: "chromium" }],
+        },
+        suites: [
+          {
+            title: "Root Suite",
+            suites: [
+              {
+                title: "Nested Suite",
+                specs: [
+                  {
+                    title: "Test Spec",
+                    ok: true,
+                    tests: [
+                      {
+                        timeout: 30000,
+                        expectedStatus: "passed",
+                        projectName: "firefox",
+                        results: [
+                          {
+                            workerIndex: 0,
+                            duration: 100,
+                            retry: 0,
+                            startTime: "2024-01-01T00:00:00.000Z",
+                          },
+                        ],
+                        status: "expected",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const validated = validatePlaywrightJson(report);
+      const normalized = normalizeTestRun(validated);
+      expect(normalized.tests).toHaveLength(1);
+      expect(normalized.tests[0].project).toBe("firefox");
+    });
+
+    it("should normalize old format with nested test.tests structure", () => {
+      const report = {
+        config: {},
+        suites: [
+          {
+            title: "Suite",
+            suites: [],
+            specs: [
+              {
+                title: "Old Format Test",
+                ok: true,
+                file: "test.spec.ts",
+                line: 10,
+                column: 5,
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    projectName: "webkit",
+                    results: [
+                      {
+                        workerIndex: 0,
+                        duration: 200,
+                        retry: 0,
+                        startTime: "2024-01-01T00:00:00.000Z",
+                      },
+                    ],
+                    status: "expected",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      };
+
+      const validated = validatePlaywrightJson(report);
+      const normalized = normalizeTestRun(validated);
+      expect(normalized.tests).toHaveLength(1);
+      expect(normalized.tests[0].project).toBe("webkit");
+      expect(normalized.tests[0].file).toBe("test.spec.ts");
+    });
+  });
+
+  describe("Statistics Single Test Scenarios", () => {
+    it("should calculate correct percentiles for single test", () => {
+      const run: NormalizedTestRun = {
+        runId: "test",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 100,
+        projects: ["test"],
+        totals: {
+          total: 1,
+          passed: 1,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 100,
+        },
+        tests: [
+          {
+            id: "test-1",
+            title: "Single Test",
+            fullTitle: "Suite > Single Test",
+            file: "test.spec.ts",
+            line: 1,
+            column: 1,
+            project: "test",
+            status: "passed",
+            duration: 100,
+            retries: 0,
+          },
+        ],
+      };
+
+      const stats = calculateStatistics(run);
+      expect(stats.duration.median).toBe(100);
+      expect(stats.duration.p95).toBe(100);
+      expect(stats.duration.min).toBe(100);
+      expect(stats.duration.max).toBe(100);
+    });
+  });
+
+  describe("Shard Validation Advanced", () => {
+    it("should validate shards with undefined total in first shard", () => {
+      const run1: NormalizedTestRun = {
+        runId: "run-1",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 1000,
+        projects: ["chromium"],
+        shards: [
+          {
+            current: 1,
+            total: undefined as unknown as number,
+            duration: 1000,
+            testCount: 5,
+          },
+        ],
+        totals: {
+          total: 5,
+          passed: 5,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 1000,
+        },
+        tests: [],
+      };
+
+      const run2: NormalizedTestRun = {
+        ...run1,
+        shards: [{ current: 2, total: 2, duration: 1000, testCount: 5 }],
+      };
+
+      expect(areRunsFromSameExecution([run1, run2])).toBe(false);
+    });
+
+    it("should aggregate run without metadata or shard info", () => {
+      const run: NormalizedTestRun = {
+        runId: "simple-run",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 500,
+        projects: ["default"],
+        totals: {
+          total: 2,
+          passed: 2,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 500,
+        },
+        tests: [
+          {
+            id: "test-1",
+            title: "Test 1",
+            fullTitle: "Test 1",
+            file: "test.spec.ts",
+            line: 1,
+            column: 1,
+            project: "default",
+            status: "passed",
+            duration: 250,
+            retries: 0,
+          },
+          {
+            id: "test-2",
+            title: "Test 2",
+            fullTitle: "Test 2",
+            file: "test.spec.ts",
+            line: 2,
+            column: 1,
+            project: "default",
+            status: "passed",
+            duration: 250,
+            retries: 0,
+          },
+        ],
+      };
+
+      const aggregated = aggregateShardedRuns([run]);
+      expect(aggregated.shards).toBeUndefined();
+      expect(aggregated.metadata).toBeUndefined();
+      expect(aggregated.tests).toHaveLength(2);
+    });
+  });
+
+  describe("Filter Status Validation", () => {
+    it("should filter and recalculate totals for skipped tests", () => {
+      const testRun: NormalizedTestRun = {
+        runId: "test",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 0,
+        projects: ["test"],
+        totals: {
+          total: 2,
+          passed: 1,
+          failed: 0,
+          skipped: 1,
+          flaky: 0,
+          duration: 100,
+        },
+        tests: [
+          {
+            id: "test-1",
+            title: "Passed Test",
+            fullTitle: "Passed Test",
+            file: "test.spec.ts",
+            line: 1,
+            column: 1,
+            project: "test",
+            status: "passed",
+            duration: 100,
+            retries: 0,
+          },
+          {
+            id: "test-2",
+            title: "Skipped Test",
+            fullTitle: "Skipped Test",
+            file: "test.spec.ts",
+            line: 2,
+            column: 1,
+            project: "test",
+            status: "skipped",
+            duration: 0,
+            retries: 0,
+          },
+        ],
+      };
+
+      const filtered = filterTests(testRun, filterPredicates.skipped);
+      expect(filtered.tests).toHaveLength(1);
+      expect(filtered.tests[0].status).toBe("skipped");
+      expect(filtered.totals.skipped).toBe(1);
+      expect(filtered.totals.total).toBe(1);
+    });
+
+    it("should filter and recalculate totals for flaky tests", () => {
+      const testRun: NormalizedTestRun = {
+        runId: "test",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 0,
+        projects: ["test"],
+        totals: {
+          total: 2,
+          passed: 1,
+          failed: 0,
+          skipped: 0,
+          flaky: 1,
+          duration: 200,
+        },
+        tests: [
+          {
+            id: "test-1",
+            title: "Passed Test",
+            fullTitle: "Passed Test",
+            file: "test.spec.ts",
+            line: 1,
+            column: 1,
+            project: "test",
+            status: "passed",
+            duration: 100,
+            retries: 0,
+          },
+          {
+            id: "test-2",
+            title: "Flaky Test",
+            fullTitle: "Flaky Test",
+            file: "test.spec.ts",
+            line: 2,
+            column: 1,
+            project: "test",
+            status: "flaky",
+            duration: 100,
+            retries: 1,
+          },
+        ],
+      };
+
+      const filtered = filterTests(testRun, filterPredicates.flaky);
+      expect(filtered.tests).toHaveLength(1);
+      expect(filtered.tests[0].status).toBe("flaky");
+      expect(filtered.totals.flaky).toBe(1);
+      expect(filtered.totals.total).toBe(1);
+    });
+  });
+
+  describe("ValidationError Constructor", () => {
+    it("should create ValidationError without issues parameter", () => {
+      const error = new ValidationError("Test error without issues");
+      expect(error.message).toBe("Test error without issues");
+      expect(error.name).toBe("ValidationError");
+      expect(error.issues).toBeUndefined();
     });
   });
 });

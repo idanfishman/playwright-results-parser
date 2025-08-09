@@ -1,6 +1,14 @@
-# playwright-results-parser
+<h1 align="center" style="border-bottom: none">
+  Playwright Results Parser
+</h1>
+
+<div align="center">
+
+[![npm](https://img.shields.io/npm/v/playwright-results-parser?color=bright-green&logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/playwright-results-parser) [![codecov](https://img.shields.io/codecov/c/github/idanfishman/playwright-results-parser?color=brightgreen&logo=codecov&logoColor=white&label=coverage)](https://codecov.io/gh/idanfishman/playwright-results-parser) [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen?logo=node.js&logoColor=white)](https://nodejs.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT) [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-brightgreen?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 A powerful Node.js library for parsing and analyzing Playwright test results. This package provides comprehensive parsing capabilities for Playwright's JSON reporter output, making it easy to extract insights, generate reports, and integrate test results into your CI/CD workflows.
+
+</div>
 
 ## Features
 
@@ -34,13 +42,15 @@ pnpm add playwright-results-parser
 ### Basic Example
 
 ```javascript
-import { parsePlaywrightResults } from 'playwright-results-parser';
+import { parsePlaywrightResults } from "playwright-results-parser";
 
 // Parse results from a file
-const results = await parsePlaywrightResults('path/to/results.json');
+const results = await parsePlaywrightResults("path/to/results.json");
 
 // Or parse from JSON data directly
-const jsonData = { /* your playwright JSON results */ };
+const jsonData = {
+  /* your playwright JSON results */
+};
 const results = await parsePlaywrightResults(jsonData);
 
 // Access parsed data
@@ -53,63 +63,63 @@ console.log(`Pass rate: ${(results.summary.passRate * 100).toFixed(2)}%`);
 ### Filtering Results
 
 ```javascript
-import { parsePlaywrightResults, filterResults } from 'playwright-results-parser';
+import { parsePlaywrightResults, filterResults } from "playwright-results-parser";
 
-const results = await parsePlaywrightResults('results.json');
+const results = await parsePlaywrightResults("results.json");
 
 // Filter by status
-const failedTests = filterResults(results, { status: ['failed', 'timedOut'] });
+const failedTests = filterResults(results, { status: ["failed", "timedOut"] });
 
 // Filter by tags
-const smokeTests = filterResults(results, { tags: ['@smoke'] });
+const smokeTests = filterResults(results, { tags: ["@smoke"] });
 
 // Filter by project
-const chromeTests = filterResults(results, { projects: ['chromium'] });
+const chromeTests = filterResults(results, { projects: ["chromium"] });
 
 // Custom filter
 const slowTests = filterResults(results, {
-  predicate: (test) => test.duration > 5000
+  predicate: (test) => test.duration > 5000,
 });
 
 // Combine multiple filters
 const criticalFailures = filterResults(results, {
-  status: ['failed'],
-  tags: ['@critical'],
-  projects: ['chromium', 'firefox']
+  status: ["failed"],
+  tags: ["@critical"],
+  projects: ["chromium", "firefox"],
 });
 ```
 
 ### Working with Test Details
 
 ```javascript
-import { parsePlaywrightResults } from 'playwright-results-parser';
+import { parsePlaywrightResults } from "playwright-results-parser";
 
-const results = await parsePlaywrightResults('results.json');
+const results = await parsePlaywrightResults("results.json");
 
 // Iterate through all tests
-results.tests.forEach(test => {
+results.tests.forEach((test) => {
   console.log(`Test: ${test.title}`);
   console.log(`  File: ${test.file}:${test.line}`);
   console.log(`  Status: ${test.status}`);
   console.log(`  Duration: ${test.duration}ms`);
-  
+
   // Access test tags
   if (test.tags.length > 0) {
-    console.log(`  Tags: ${test.tags.join(', ')}`);
+    console.log(`  Tags: ${test.tags.join(", ")}`);
   }
-  
+
   // Check for errors
   if (test.errors.length > 0) {
-    test.errors.forEach(error => {
+    test.errors.forEach((error) => {
       console.log(`  Error: ${error.message}`);
       if (error.snippet) {
         console.log(`    Snippet: ${error.snippet}`);
       }
     });
   }
-  
+
   // Access annotations
-  test.annotations.forEach(annotation => {
+  test.annotations.forEach((annotation) => {
     console.log(`  ${annotation.type}: ${annotation.description}`);
   });
 });
@@ -118,17 +128,17 @@ results.tests.forEach(test => {
 ### Analyzing Test Suites
 
 ```javascript
-import { parsePlaywrightResults } from 'playwright-results-parser';
+import { parsePlaywrightResults } from "playwright-results-parser";
 
-const results = await parsePlaywrightResults('results.json');
+const results = await parsePlaywrightResults("results.json");
 
 // Access suite hierarchy
-results.suites.forEach(suite => {
+results.suites.forEach((suite) => {
   console.log(`Suite: ${suite.title}`);
   console.log(`  File: ${suite.file}`);
   console.log(`  Total tests: ${suite.tests.length}`);
   console.log(`  Pass rate: ${(suite.stats.passRate * 100).toFixed(2)}%`);
-  
+
   // Access nested suites
   if (suite.suites.length > 0) {
     console.log(`  Nested suites: ${suite.suites.length}`);
@@ -139,12 +149,12 @@ results.suites.forEach(suite => {
 ### Statistical Analysis
 
 ```javascript
-import { parsePlaywrightResults, getStatistics } from 'playwright-results-parser';
+import { parsePlaywrightResults, getStatistics } from "playwright-results-parser";
 
-const results = await parsePlaywrightResults('results.json');
+const results = await parsePlaywrightResults("results.json");
 const stats = getStatistics(results);
 
-console.log('Test Statistics:');
+console.log("Test Statistics:");
 console.log(`  Total: ${stats.total}`);
 console.log(`  Passed: ${stats.passed}`);
 console.log(`  Failed: ${stats.failed}`);
@@ -160,13 +170,15 @@ console.log(`  Total Duration: ${stats.totalDuration}ms`);
 ### Main Functions
 
 #### `parsePlaywrightResults(input)`
+
 Parses Playwright JSON results from a file path or JSON object.
 
-- **Parameters**: 
+- **Parameters**:
   - `input`: File path (string) or Playwright JSON results object
 - **Returns**: `Promise<ParsedResults>`
 
 #### `filterResults(results, options)`
+
 Filters parsed results based on specified criteria.
 
 - **Parameters**:
@@ -179,9 +191,10 @@ Filters parsed results based on specified criteria.
 - **Returns**: `FilteredResults`
 
 #### `getStatistics(results)`
+
 Calculates statistical metrics from test results.
 
-- **Parameters**: 
+- **Parameters**:
   - `results`: Parsed or filtered results
 - **Returns**: `Statistics` object with metrics
 
@@ -198,7 +211,7 @@ import type {
   Statistics,
   FilterOptions,
   // ... and more
-} from 'playwright-results-parser';
+} from "playwright-results-parser";
 ```
 
 ## Showcases
@@ -206,12 +219,15 @@ import type {
 This package serves as the core parsing library for several GitHub Actions:
 
 ### [Playwright Results Summary Action](https://github.com/idanfishman/playwright-results-summary-action)
+
 Generate test result summaries directly in your pull requests and workflow runs.
 
 ### [Playwright Results Notify Action](https://github.com/idanfishman/playwright-results-notify-action)
+
 Send test results notifications via Slack, email, or other channels.
 
 ### [Playwright Prometheus Metrics Action](https://github.com/idanfishman/playwright-prometheus-metrics-action)
+
 Export Playwright test metrics to Prometheus for monitoring and alerting.
 
 ## Requirements

@@ -77,27 +77,24 @@ function extractAnnotations(annotations?: unknown[]): TestAnnotation[] {
 }
 
 /**
- * Determine test status based on Playwright status and retry information
+ * Determine test status based on Playwright status
  */
 function determineTestStatus(
   status: string,
-  retries: number,
-  results: unknown[],
 ): "passed" | "failed" | "skipped" | "flaky" {
-  if (status === "skipped") return "skipped";
-
-  // Check if test is flaky (passed after retry)
-  if (retries > 0 && (status === "passed" || status === "expected")) {
-    // Check if any attempt failed
-    const hasFailure = results.some((r) => {
-      const result = r as Record<string, unknown>;
-      return result.status === "failed" || result.status === "timedOut";
-    });
-    if (hasFailure) return "flaky";
+  switch (status) {
+    case "expected":
+      return "passed";
+    case "unexpected":
+      return "failed";
+    case "flaky":
+      return "flaky";
+    case "skipped":
+      return "skipped";
+    default:
+      // Fallback for any unknown status
+      return "failed";
   }
-
-  if (status === "passed" || status === "expected") return "passed";
-  return "failed";
 }
 
 /**
@@ -123,54 +120,45 @@ function flattenTests(
     if (suite.specs && Array.isArray(suite.specs)) {
       for (const specRaw of suite.specs) {
         const spec = specRaw as Record<string, unknown>;
-        const specPath = [...suitePath, spec.title as string].filter(Boolean);
+        const specTitle = spec.title as string;
+        const specPath = [...suitePath];
 
+        // Process tests within the spec
         const specTests = (spec.tests as unknown[]) || [];
-        for (const testRaw of specTests) {
-          const test = testRaw as Record<string, unknown>;
-          const testTests = (test.tests as unknown[]) || [];
+        for (let testIndex = 0; testIndex < specTests.length; testIndex++) {
+          const test = specTests[testIndex] as Record<string, unknown>;
+          const fullTitle = [...specPath, specTitle].filter(Boolean).join(" › ");
+          const projectName =
+            (test.projectName as string) || (test.projectId as string) || project;
 
-          for (const testResultRaw of testTests) {
-            const testResult = testResultRaw as Record<string, unknown>;
-            const fullTitle = [...specPath, test.title as string]
-              .filter(Boolean)
-              .join(" › ");
-            const projectName = (testResult.projectName as string) || project;
-            const testLocation = test.location as Record<string, unknown> | undefined;
+          // Get the test results (attempts)
+          const results = (test.results as unknown[]) || [];
+          if (results.length === 0) continue;
 
-            // Get the last result (most recent attempt)
-            const results = (testResult.results as unknown[]) || [];
-            const lastResult = (results[results.length - 1] || {}) as Record<
-              string,
-              unknown
-            >;
-            const lastResultErrors = (lastResult.errors as unknown[]) || [];
+          // Get the last result (most recent attempt)
+          const lastResult = results[results.length - 1] as Record<string, unknown>;
+          const lastResultErrors = (lastResult.errors as unknown[]) || [];
 
-            tests.push({
-              id: generateTestId(
-                projectName,
-                spec.file as string,
-                test.title as string,
-                tests.length,
-              ),
-              title: test.title as string,
-              fullTitle,
-              file: (testLocation?.file as string) || (spec.file as string),
-              line: (testLocation?.line as number) || (spec.line as number) || 0,
-              column: (testLocation?.column as number) || (spec.column as number) || 0,
-              project: projectName,
-              status: determineTestStatus(
-                testResult.status as string,
-                (test.retries as number) || 0,
-                results,
-              ),
-              duration: (lastResult.duration as number) || 0,
-              retries: (test.retries as number) || 0,
-              error: extractError(lastResult.error || lastResultErrors[0]),
-              attachments: extractAttachments(lastResult.attachments as unknown[]),
-              annotations: extractAnnotations(testResult.annotations as unknown[]),
-            });
-          }
+          tests.push({
+            id: generateTestId(
+              projectName,
+              (spec.file as string) || (suite.file as string) || "unknown",
+              specTitle,
+              testIndex,
+            ),
+            title: specTitle,
+            fullTitle,
+            file: (spec.file as string) || (suite.file as string) || "unknown",
+            line: (spec.line as number) || (suite.line as number) || 0,
+            column: (spec.column as number) || (suite.column as number) || 0,
+            project: projectName,
+            status: determineTestStatus((test.status as string) || "unknown"),
+            duration: (lastResult.duration as number) || 0,
+            retries: results.length - 1,
+            error: extractError(lastResult.error || lastResultErrors[0]),
+            attachments: extractAttachments(lastResult.attachments as unknown[]),
+            annotations: extractAnnotations(test.annotations as unknown[]),
+          });
         }
       }
     }
@@ -210,11 +198,7 @@ function flattenTests(
             line: (testLocation?.line as number) || (suite.line as number) || 0,
             column: (testLocation?.column as number) || (suite.column as number) || 0,
             project: projectName,
-            status: determineTestStatus(
-              testResult.status as string,
-              (test.retries as number) || 0,
-              results,
-            ),
+            status: determineTestStatus((testResult.status as string) || "unknown"),
             duration: (lastResult.duration as number) || 0,
             retries: (test.retries as number) || 0,
             error: extractError(lastResult.error || lastResultErrors[0]),
@@ -271,16 +255,18 @@ function extractShardInfo(
   report: PlaywrightJsonReport,
   tests: NormalizedTest[],
 ): ShardInfo[] | undefined {
-  if (!report.shards || !Array.isArray(report.shards) || report.shards.length === 0) {
+  if (!report.config.shard) {
     return undefined;
   }
 
-  return report.shards.map((shard) => ({
-    current: shard.current,
-    total: shard.total,
-    duration: report.stats?.duration || 0,
-    testCount: tests.length,
-  }));
+  return [
+    {
+      current: report.config.shard.current,
+      total: report.config.shard.total,
+      duration: report.stats?.duration || 0,
+      testCount: tests.length,
+    },
+  ];
 }
 
 /**
@@ -346,8 +332,12 @@ export function normalizeTestRun(report: PlaywrightJsonReport): NormalizedTestRu
 
   // Extract timestamps
   const startedAt = report.stats?.startTime || new Date().toISOString();
-  const endedAt = report.stats?.endTime || new Date().toISOString();
   const duration = report.stats?.duration || 0;
+  // Calculate endTime from startTime and duration
+  const endedAt =
+    report.stats?.startTime ?
+      new Date(new Date(report.stats.startTime).getTime() + duration).toISOString()
+    : new Date().toISOString();
 
   // Extract projects
   const projects = extractProjects(report);

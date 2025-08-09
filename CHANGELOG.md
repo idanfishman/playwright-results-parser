@@ -4,7 +4,37 @@ All notable changes to the playwright-results-parser project will be documented 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0](https://github.com/idanfishman/playwright-results-parser/releases/tag/v1.0.0) - 2025-08-09
+## [1.0.1](https://github.com/idanfishman/playwright-results-parser/releases/tag/v1.0.1) - 2025-08-09
+
+### Fixed
+
+#### Parser Logic
+
+- **Schema Validation**: Fixed validation schema to accept annotations field in test results
+- **Result Schema**: Updated stdout/stderr fields to handle both string arrays and object arrays
+- **Spec Schema**: Added support for retries and location fields in test specs
+- **Flaky Test Detection**: Fixed `getFlakyTests()` to correctly identify tests with retries > 0
+- **File Location Fallback**: Fixed normalizer to properly handle missing file location info (returns "unknown" instead of suite title)
+
+#### Test Coverage
+
+- **Comprehensive Fixture Tests**: Added 24 new tests for complete fixture validation
+- **Test Fixtures**: Replaced old test fixtures with real-world scenario fixtures:
+  - `all-success.json`: 6 passing tests across 3 browsers
+  - `with-failures.json`: 21 tests with mixed pass/fail results
+  - `flaky-tests.json`: 15 tests including flaky test scenarios
+  - `shard1.json` & `shard2.json`: Sharded test execution examples
+- **Validation Coverage**: Added tests for all test statuses, unique IDs, fullTitle paths, and totals calculation
+
+### Changed
+
+#### Test Infrastructure
+
+- **Fixture Organization**: Renamed fixtures for clarity (removed "scenario" prefix)
+- **Test Structure**: Reorganized parser tests with dedicated sections for each fixture
+- **Edge Case Testing**: Added comprehensive validation for data consistency across all fixtures
+
+## [1.0.0](https://github.com/idanfishman/playwright-results-parser/releases/tag/v1.0.0) - 2025-08-09 [YANKED]
 
 ### Added
 

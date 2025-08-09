@@ -1,22 +1,102 @@
 {
   "config": {
-    "rootDir": "/project",
+    "configFile": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/playwright.config.ts",
+    "rootDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 7
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
     "projects": [
       {
-        "name": "chromium"
+        "outputDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
       }
-    ]
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.2",
+    "workers": 7,
+    "webServer": null
   },
   "suites": [
     {
-      "title": "Flaky Suite",
-      "specs": [
+      "title": "03-flaky-tests.spec.ts",
+      "file": "03-flaky-tests.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
         {
-          "title": "flaky.spec.ts",
-          "ok": true,
-          "tests": [
+          "title": "Flaky Tests Scenario",
+          "file": "03-flaky-tests.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
             {
-              "title": "flaky test that passes on retry",
+              "title": "should pass immediately (STABLE)",
               "ok": true,
               "tags": [],
               "tests": [
@@ -24,104 +104,764 @@
                   "timeout": 30000,
                   "annotations": [],
                   "expectedStatus": "passed",
+                  "projectId": "chromium",
                   "projectName": "chromium",
                   "results": [
                     {
                       "workerIndex": 0,
-                      "status": "failed",
-                      "duration": 1000,
-                      "error": {
-                        "message": "Random failure"
-                      },
-                      "errors": [
-                        {
-                          "message": "Random failure"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2024-01-01T10:00:00.000Z",
-                      "attachments": []
-                    },
-                    {
-                      "workerIndex": 0,
+                      "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 800,
+                      "duration": 3438,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
-                      "retry": 1,
-                      "startTime": "2024-01-01T10:00:01.000Z",
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:22.423Z",
+                      "annotations": [],
                       "attachments": []
                     }
                   ],
                   "status": "expected"
                 }
               ],
-              "id": "test-1",
-              "retries": 1,
-              "location": {
-                "file": "tests/flaky.spec.ts",
-                "line": 5,
-                "column": 1
-              }
+              "id": "4c2090b17c9bb3e0a349-359bd1529f56e2c1b2ab",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 7,
+              "column": 7
             },
             {
-              "title": "test that is skipped",
+              "title": "should be flaky - random failure (FLAKY)",
               "ok": true,
               "tags": [],
               "tests": [
                 {
                   "timeout": 30000,
-                  "annotations": [
-                    {
-                      "type": "skip",
-                      "description": "Not ready yet"
-                    }
-                  ],
-                  "expectedStatus": "skipped",
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
-                      "status": "skipped",
-                      "duration": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4757,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2024-01-01T10:00:02.000Z",
+                      "startTime": "2025-08-09T19:38:22.428Z",
+                      "annotations": [],
                       "attachments": []
                     }
                   ],
-                  "status": "skipped"
+                  "status": "expected"
                 }
               ],
-              "id": "test-2",
-              "retries": 0,
-              "location": {
-                "file": "tests/flaky.spec.ts",
-                "line": 15,
-                "column": 1
-              }
+              "id": "4c2090b17c9bb3e0a349-fd931ecc7c535ec8266f",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "should be flaky - timing sensitive (FLAKY)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3142,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:22.429Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-d0c0a43b161e03ec6820",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 27,
+              "column": 7
+            },
+            {
+              "title": "should pass after navigation delay (FLAKY)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 6517,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:45:68",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                          "column": 68,
+                          "line": 45
+                        },
+                        "snippet": "  43 |     if (test.info().retry === 0) {\n  44 |       // Simulate a test that fails due to race condition on first try\n> 45 |       await expect(page.getByText('This might not be loaded yet')).toBeVisible({ timeout: 100 });\n     |                                                                    ^\n  46 |     } else {\n  47 |       // Pass on retry with proper element\n  48 |       await expect(page.getByText('Chosen by companies and open source projects')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                            "column": 68,
+                            "line": 45
+                          },
+                          "message": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n\n\n  43 |     if (test.info().retry === 0) {\n  44 |       // Simulate a test that fails due to race condition on first try\n> 45 |       await expect(page.getByText('This might not be loaded yet')).toBeVisible({ timeout: 100 });\n     |                                                                    ^\n  46 |     } else {\n  47 |       // Pass on retry with proper element\n  48 |       await expect(page.getByText('Chosen by companies and open source projects')).toBeVisible();\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:45:68"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:22.425Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-f7e89-ter-navigation-delay-FLAKY--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                        "column": 68,
+                        "line": 45
+                      }
+                    },
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1054,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2025-08-09T19:38:29.392Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-f7e89-ter-navigation-delay-FLAKY--chromium-retry1/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "flaky"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-7cb3a939093a835d201f",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "should always pass (STABLE)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3693,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:22.423Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-5d1bd02fca9ef7c5c728",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "should pass immediately (STABLE)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 1394,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:22.423Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-86af9a2530d458dc7cce",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 7,
+              "column": 7
+            },
+            {
+              "title": "should be flaky - random failure (FLAKY)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "failed",
+                      "duration": 9752,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 1000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('intentionally-missing-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('intentionally-missing-element')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 1000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('intentionally-missing-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('intentionally-missing-element')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:20:71",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                          "column": 71,
+                          "line": 20
+                        },
+                        "snippet": "  18 |     if (shouldFail && test.info().retry === 0) {\n  19 |       // Force a failure on first attempt\n> 20 |       await expect(page.getByTestId('intentionally-missing-element')).toBeVisible({ timeout: 1000 });\n     |                                                                       ^\n  21 |     } else {\n  22 |       // Pass on retry\n  23 |       await expect(page.getByRole('heading', { name: /Playwright enables reliable/ })).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                            "column": 71,
+                            "line": 20
+                          },
+                          "message": "Error: \u001b[31mTimed out 1000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('intentionally-missing-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('intentionally-missing-element')\u001b[22m\n\n\n  18 |     if (shouldFail && test.info().retry === 0) {\n  19 |       // Force a failure on first attempt\n> 20 |       await expect(page.getByTestId('intentionally-missing-element')).toBeVisible({ timeout: 1000 });\n     |                                                                       ^\n  21 |     } else {\n  22 |       // Pass on retry\n  23 |       await expect(page.getByRole('heading', { name: /Playwright enables reliable/ })).toBeVisible();\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:20:71"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:22.428Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-766e8-aky---random-failure-FLAKY--firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                        "column": 71,
+                        "line": 20
+                      }
+                    },
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1204,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2025-08-09T19:38:33.148Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-766e8-aky---random-failure-FLAKY--firefox-retry1/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "flaky"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-4ce1fa69e37888d6bc00",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "should be flaky - timing sensitive (FLAKY)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2608,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:24.658Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-bfd21bea949cda701b03",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 27,
+              "column": 7
+            },
+            {
+              "title": "should pass after navigation delay (FLAKY)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 2179,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:45:68",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                          "column": 68,
+                          "line": 45
+                        },
+                        "snippet": "  43 |     if (test.info().retry === 0) {\n  44 |       // Simulate a test that fails due to race condition on first try\n> 45 |       await expect(page.getByText('This might not be loaded yet')).toBeVisible({ timeout: 100 });\n     |                                                                    ^\n  46 |     } else {\n  47 |       // Pass on retry with proper element\n  48 |       await expect(page.getByText('Chosen by companies and open source projects')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                            "column": 68,
+                            "line": 45
+                          },
+                          "message": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n\n\n  43 |     if (test.info().retry === 0) {\n  44 |       // Simulate a test that fails due to race condition on first try\n> 45 |       await expect(page.getByText('This might not be loaded yet')).toBeVisible({ timeout: 100 });\n     |                                                                    ^\n  46 |     } else {\n  47 |       // Pass on retry with proper element\n  48 |       await expect(page.getByText('Chosen by companies and open source projects')).toBeVisible();\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:45:68"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:25.994Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-f7e89-ter-navigation-delay-FLAKY--firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                        "column": 68,
+                        "line": 45
+                      }
+                    },
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4697,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2025-08-09T19:38:29.101Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-f7e89-ter-navigation-delay-FLAKY--firefox-retry1/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "flaky"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-bc1d97f4753b1c081d96",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "should always pass (STABLE)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8748,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:26.317Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-8bdd55929116fae3d355",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "should pass immediately (STABLE)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4123,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:26.575Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-c0f3b5adece97a3960d4",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 7,
+              "column": 7
+            },
+            {
+              "title": "should be flaky - random failure (FLAKY)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 3590,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 1000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('intentionally-missing-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('intentionally-missing-element')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 1000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('intentionally-missing-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('intentionally-missing-element')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:20:71",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                          "column": 71,
+                          "line": 20
+                        },
+                        "snippet": "  18 |     if (shouldFail && test.info().retry === 0) {\n  19 |       // Force a failure on first attempt\n> 20 |       await expect(page.getByTestId('intentionally-missing-element')).toBeVisible({ timeout: 1000 });\n     |                                                                       ^\n  21 |     } else {\n  22 |       // Pass on retry\n  23 |       await expect(page.getByRole('heading', { name: /Playwright enables reliable/ })).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                            "column": 71,
+                            "line": 20
+                          },
+                          "message": "Error: \u001b[31mTimed out 1000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('intentionally-missing-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 1000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('intentionally-missing-element')\u001b[22m\n\n\n  18 |     if (shouldFail && test.info().retry === 0) {\n  19 |       // Force a failure on first attempt\n> 20 |       await expect(page.getByTestId('intentionally-missing-element')).toBeVisible({ timeout: 1000 });\n     |                                                                       ^\n  21 |     } else {\n  22 |       // Pass on retry\n  23 |       await expect(page.getByRole('heading', { name: /Playwright enables reliable/ })).toBeVisible();\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:20:71"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:27.790Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-766e8-aky---random-failure-FLAKY--webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                        "column": 71,
+                        "line": 20
+                      }
+                    },
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 2248,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2025-08-09T19:38:31.793Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-766e8-aky---random-failure-FLAKY--webkit-retry1/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "flaky"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-0b2cbeb06c9067ad7e8a",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 12,
+              "column": 7
+            },
+            {
+              "title": "should be flaky - timing sensitive (FLAKY)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2328,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:27.619Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-233c9e4510a6f09cdcd6",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 27,
+              "column": 7
+            },
+            {
+              "title": "should pass after navigation delay (FLAKY)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 1057,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:45:68",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                          "column": 68,
+                          "line": 45
+                        },
+                        "snippet": "  43 |     if (test.info().retry === 0) {\n  44 |       // Simulate a test that fails due to race condition on first try\n> 45 |       await expect(page.getByText('This might not be loaded yet')).toBeVisible({ timeout: 100 });\n     |                                                                    ^\n  46 |     } else {\n  47 |       // Pass on retry with proper element\n  48 |       await expect(page.getByText('Chosen by companies and open source projects')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                            "column": 68,
+                            "line": 45
+                          },
+                          "message": "Error: \u001b[31mTimed out 100ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This might not be loaded yet')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 100ms\u001b[22m\n\u001b[2m  - waiting for getByText('This might not be loaded yet')\u001b[22m\n\n\n  43 |     if (test.info().retry === 0) {\n  44 |       // Simulate a test that fails due to race condition on first try\n> 45 |       await expect(page.getByText('This might not be loaded yet')).toBeVisible({ timeout: 100 });\n     |                                                                    ^\n  46 |     } else {\n  47 |       // Pass on retry with proper element\n  48 |       await expect(page.getByText('Chosen by companies and open source projects')).toBeVisible();\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts:45:68"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:30.073Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-f7e89-ter-navigation-delay-FLAKY--webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/03-flaky-tests.spec.ts",
+                        "column": 68,
+                        "line": 45
+                      }
+                    },
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2349,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 1,
+                      "startTime": "2025-08-09T19:38:31.402Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/03-flaky-tests-Flaky-Tests-f7e89-ter-navigation-delay-FLAKY--webkit-retry1/trace.zip"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "flaky"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-24b8942e192fd27a368b",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 40,
+              "column": 7
+            },
+            {
+              "title": "should always pass (STABLE)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1157,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:38:30.815Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4c2090b17c9bb3e0a349-3014d6211c94fd5fda84",
+              "file": "03-flaky-tests.spec.ts",
+              "line": 52,
+              "column": 7
             }
-          ],
-          "id": "spec-1",
-          "file": "tests/flaky.spec.ts",
-          "line": 1,
-          "column": 0
+          ]
         }
       ]
     }
   ],
+  "errors": [],
   "stats": {
-    "startTime": "2024-01-01T10:00:00.000Z",
-    "endTime": "2024-01-01T10:00:02.000Z",
-    "duration": 2000,
-    "expected": 1,
+    "startTime": "2025-08-09T19:38:22.071Z",
+    "duration": 13711.181,
+    "expected": 10,
+    "skipped": 0,
     "unexpected": 0,
-    "skipped": 1,
-    "flaky": 1
+    "flaky": 5
   }
 }

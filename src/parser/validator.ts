@@ -1,5 +1,6 @@
 /**
  * Zod validation schemas for Playwright JSON report structure
+ * Based on @playwright/test/reporter types
  */
 
 import { z } from "zod";
@@ -17,10 +18,9 @@ const LocationSchema = z.object({
  * Schema for test error information
  */
 const ErrorSchema = z.object({
-  message: z.string(),
+  message: z.string().optional(),
   stack: z.string().optional(),
-  snippet: z.string().optional(),
-  location: LocationSchema.optional(),
+  value: z.string().optional(),
 });
 
 /**
@@ -42,139 +42,202 @@ const AnnotationSchema = z.object({
 });
 
 /**
- * Schema for test attempt result
+ * Interface for test step (recursive)
  */
-const TestAttemptSchema = z.object({
-  workerIndex: z.number(),
-  status: z.string(),
-  duration: z.number(),
-  error: ErrorSchema.optional(),
-  errors: z.array(ErrorSchema),
-  stdout: z.array(z.string()),
-  stderr: z.array(z.string()),
-  retry: z.number(),
-  startTime: z.string(),
-  attachments: z.array(AttachmentSchema),
-});
-
-/**
- * Schema for test result
- */
-const TestResultSchema = z.object({
-  timeout: z.number(),
-  annotations: z.array(AnnotationSchema),
-  expectedStatus: z.string(),
-  projectId: z.string().optional(),
-  projectName: z.string(),
-  results: z.array(TestAttemptSchema),
-  status: z.string(),
-});
-
-/**
- * Interface for test case to avoid circular reference
- */
-interface TestCase {
+interface TestStep {
   title: string;
-  ok: boolean;
-  tags: string[];
-  tests: z.infer<typeof TestResultSchema>[];
-  id: string;
-  retries: number;
-  location?: z.infer<typeof LocationSchema>;
+  duration: number;
+  error?: z.infer<typeof ErrorSchema>;
+  steps?: TestStep[];
 }
 
 /**
- * Schema for test case
+ * Schema for test step information
  */
-const TestCaseSchema: z.ZodType<TestCase> = z.lazy(() =>
+const StepSchema: z.ZodType<TestStep> = z.lazy(() =>
   z.object({
     title: z.string(),
-    ok: z.boolean(),
-    tags: z.array(z.string()),
-    tests: z.array(TestResultSchema),
-    id: z.string(),
-    retries: z.number(),
-    location: LocationSchema.optional(),
+    duration: z.number(),
+    error: ErrorSchema.optional(),
+    steps: z.array(StepSchema).optional(),
   }),
 );
 
 /**
- * Schema for test spec
+ * Schema for test result (single test run attempt)
+ */
+const TestResultSchema = z.object({
+  workerIndex: z.number(),
+  status: z.enum(["passed", "failed", "timedOut", "skipped", "interrupted"]).optional(),
+  duration: z.number(),
+  error: ErrorSchema.optional(),
+  errors: z.array(ErrorSchema).optional(),
+  stdout: z
+    .array(
+      z.union([
+        z.string(),
+        z.object({
+          text: z.string().optional(),
+          buffer: z.string().optional(),
+        }),
+      ]),
+    )
+    .optional(),
+  stderr: z
+    .array(
+      z.union([
+        z.string(),
+        z.object({
+          text: z.string().optional(),
+          buffer: z.string().optional(),
+        }),
+      ]),
+    )
+    .optional(),
+  retry: z.number(),
+  startTime: z.string(),
+  attachments: z.array(AttachmentSchema).optional(),
+  annotations: z.array(AnnotationSchema).optional(),
+  steps: z.array(StepSchema).optional(),
+  parallelIndex: z.number().optional(),
+});
+
+/**
+ * Schema for a test (contains multiple results/attempts)
+ */
+const TestSchema = z.object({
+  timeout: z.number(),
+  annotations: z.array(AnnotationSchema).optional(),
+  expectedStatus: z.enum(["passed", "failed", "timedOut", "skipped"]),
+  projectId: z.string().optional(),
+  projectName: z.string().optional(),
+  results: z.array(TestResultSchema),
+  status: z.enum(["expected", "unexpected", "flaky", "skipped"]).optional(),
+});
+
+/**
+ * Schema for test spec (represents a single test)
  */
 const SpecSchema = z.object({
   title: z.string(),
   ok: z.boolean(),
-  tests: z.array(TestCaseSchema),
-  id: z.string(),
-  file: z.string(),
-  line: z.number(),
-  column: z.number(),
+  tags: z.array(z.string()).optional(),
+  tests: z.array(TestSchema),
+  id: z.string().optional(),
+  file: z.string().optional(),
+  line: z.number().optional(),
+  column: z.number().optional(),
+  retries: z.number().optional(),
+  location: LocationSchema.optional(),
 });
 
 /**
- * Interface for test suite to handle recursive reference
+ * Interface for test suite (recursive)
  */
-interface Suite {
+interface TestSuite {
   title: string;
   file?: string;
   line?: number;
   column?: number;
-  suites?: Suite[];
-  tests?: TestCase[];
+  suites?: TestSuite[];
   specs?: z.infer<typeof SpecSchema>[];
+  tests?: z.infer<typeof TestSchema>[];
 }
 
 /**
- * Schema for test suite (recursive)
+ * Schema for test suite (recursive, contains specs and/or other suites)
  */
-const SuiteSchema: z.ZodType<Suite> = z.lazy(() =>
+const SuiteSchema: z.ZodType<TestSuite> = z.lazy(() =>
   z.object({
     title: z.string(),
     file: z.string().optional(),
     line: z.number().optional(),
     column: z.number().optional(),
     suites: z.array(SuiteSchema).optional(),
-    tests: z.array(TestCaseSchema).optional(),
     specs: z.array(SpecSchema).optional(),
+    tests: z.array(TestSchema).optional(),
   }),
 );
+
+/**
+ * Schema for project configuration
+ */
+const ProjectSchema = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  testDir: z.string().optional(),
+  testIgnore: z.array(z.union([z.string(), z.instanceof(RegExp)])).optional(),
+  testMatch: z.array(z.union([z.string(), z.instanceof(RegExp)])).optional(),
+  timeout: z.number().optional(),
+  metadata: z.any().optional(),
+  outputDir: z.string().optional(),
+  repeatEach: z.number().optional(),
+  retries: z.number().optional(),
+  use: z.any().optional(),
+});
+
+/**
+ * Schema for configuration
+ */
+const ConfigSchema = z.object({
+  configFile: z.string().optional(),
+  rootDir: z.string().optional(),
+  forbidOnly: z.boolean().optional(),
+  fullyParallel: z.boolean().optional(),
+  globalSetup: z.union([z.string(), z.null()]).optional(),
+  globalTeardown: z.union([z.string(), z.null()]).optional(),
+  globalTimeout: z.number().optional(),
+  grep: z.any().optional(),
+  grepInvert: z.any().optional().nullable(),
+  maxFailures: z.number().optional(),
+  metadata: z.any().optional(),
+  preserveOutput: z.string().optional(),
+  reporter: z.any().optional(),
+  reportSlowTests: z.any().optional().nullable(),
+  quiet: z.boolean().optional(),
+  projects: z.array(ProjectSchema).optional(),
+  shard: z
+    .object({
+      current: z.number(),
+      total: z.number(),
+    })
+    .optional()
+    .nullable(),
+  updateSnapshots: z.string().optional(),
+  updateSourceMethod: z.string().optional(),
+  version: z.string().optional(),
+  workers: z.number().optional(),
+  webServer: z.any().optional().nullable(),
+});
+
+/**
+ * Schema for statistics
+ */
+const StatsSchema = z.object({
+  startTime: z.string(),
+  duration: z.number(),
+  expected: z.number().optional(),
+  unexpected: z.number().optional(),
+  flaky: z.number().optional(),
+  skipped: z.number().optional(),
+});
+
+/**
+ * Schema for error details
+ */
+const ErrorDetailsSchema = z.object({
+  message: z.string(),
+  location: LocationSchema.optional(),
+});
 
 /**
  * Schema for Playwright JSON report
  */
 export const PlaywrightJsonSchema = z.object({
-  config: z.object({
-    rootDir: z.string().optional(),
-    projects: z
-      .array(
-        z.object({
-          id: z.string().optional(),
-          name: z.string(),
-        }),
-      )
-      .optional(),
-    metadata: z.record(z.string(), z.unknown()).optional(),
-  }),
+  config: ConfigSchema,
   suites: z.array(SuiteSchema),
-  stats: z
-    .object({
-      startTime: z.string(),
-      endTime: z.string().optional(),
-      duration: z.number(),
-      expected: z.number(),
-      unexpected: z.number(),
-      skipped: z.number(),
-      flaky: z.number(),
-    })
-    .optional(),
-  shards: z
-    .array(
-      z.object({
-        current: z.number(),
-        total: z.number(),
-      }),
-    )
-    .optional(),
+  errors: z.array(ErrorDetailsSchema).optional(),
+  stats: StatsSchema.optional(),
 });
 
 /**

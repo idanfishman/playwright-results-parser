@@ -137,7 +137,7 @@ describe("Parser", () => {
       const filePath = path.join(__dirname, "fixtures", "all-success.json");
       const result = await parsePlaywrightJson(filePath);
 
-      const projectSet = new Set(result.tests.map(t => t.project));
+      const projectSet = new Set(result.tests.map((t) => t.project));
       expect(projectSet.size).toBeGreaterThan(0);
     });
   });
@@ -148,7 +148,12 @@ describe("Parser", () => {
       const result = await parsePlaywrightJson(filePath);
 
       expect(result.totals.total).toBeGreaterThan(0);
-      expect(result.totals.total).toBe(result.totals.passed + result.totals.failed + result.totals.skipped + result.totals.flaky);
+      expect(result.totals.total).toBe(
+        result.totals.passed +
+          result.totals.failed +
+          result.totals.skipped +
+          result.totals.flaky,
+      );
       expect(result.totals.duration).toBeGreaterThan(0);
     });
 
@@ -379,13 +384,13 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "all-success.json");
       const result = await parsePlaywrightJson(filePath);
 
-      const titles = result.tests.map(t => t.title);
+      const titles = result.tests.map((t) => t.title);
       expect(titles).toContain("should have correct page title");
       expect(titles).toContain("should display main heading");
       expect(titles).toContain("should have Get started link");
 
       // No test should have errors
-      result.tests.forEach(test => {
+      result.tests.forEach((test) => {
         expect(test.error).toBeUndefined();
         expect(test.status).toBe("passed");
       });
@@ -395,7 +400,7 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "all-success.json");
       const result = await parsePlaywrightJson(filePath);
 
-      result.tests.forEach(test => {
+      result.tests.forEach((test) => {
         expect(test.retries).toBe(0);
       });
     });
@@ -404,10 +409,10 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "all-success.json");
       const result = await parsePlaywrightJson(filePath);
 
-      result.tests.forEach(test => {
+      result.tests.forEach((test) => {
         expect(test.duration).toBeGreaterThan(0);
       });
-      
+
       expect(result.totals.duration).toBeGreaterThan(0);
     });
   });
@@ -427,14 +432,14 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "with-failures.json");
       const result = await parsePlaywrightJson(filePath);
 
-      const failedTests = result.tests.filter(t => t.status === "failed");
+      const failedTests = result.tests.filter((t) => t.status === "failed");
       expect(failedTests).toHaveLength(12);
 
       // At least some failed tests should have error details
-      const testsWithErrors = failedTests.filter(t => t.error !== undefined);
+      const testsWithErrors = failedTests.filter((t) => t.error !== undefined);
       expect(testsWithErrors.length).toBeGreaterThan(0);
 
-      testsWithErrors.forEach(test => {
+      testsWithErrors.forEach((test) => {
         expect(test.error).toHaveProperty("message");
         expect(typeof test.error!.message).toBe("string");
       });
@@ -444,9 +449,9 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "with-failures.json");
       const result = await parsePlaywrightJson(filePath);
 
-      const chromiumTests = result.tests.filter(t => t.project === "chromium");
-      const firefoxTests = result.tests.filter(t => t.project === "firefox");
-      const webkitTests = result.tests.filter(t => t.project === "webkit");
+      const chromiumTests = result.tests.filter((t) => t.project === "chromium");
+      const firefoxTests = result.tests.filter((t) => t.project === "firefox");
+      const webkitTests = result.tests.filter((t) => t.project === "webkit");
 
       expect(chromiumTests.length).toBe(7);
       expect(firefoxTests.length).toBe(7);
@@ -457,7 +462,7 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "with-failures.json");
       const result = await parsePlaywrightJson(filePath);
 
-      const titles = result.tests.map(t => t.title);
+      const titles = result.tests.map((t) => t.title);
       expect(titles).toContain("should have correct page title (PASS)");
       expect(titles).toContain("should find non-existent element (FAIL)");
       expect(titles).toContain("should have wrong page title (FAIL)");
@@ -467,7 +472,7 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "with-failures.json");
       const result = await parsePlaywrightJson(filePath);
 
-      result.tests.forEach(test => {
+      result.tests.forEach((test) => {
         expect(test.file).toBeDefined();
         expect(test.file).toMatch(/\.spec\.ts$/);
         expect(test.line).toBeGreaterThanOrEqual(0);
@@ -482,10 +487,10 @@ describe("Comprehensive Fixture Coverage", () => {
       const result = await parsePlaywrightJson(filePath);
 
       expect(result.tests).toHaveLength(15);
-      
-      const flakyTests = result.tests.filter(t => t.status === "flaky");
-      const passedTests = result.tests.filter(t => t.status === "passed");
-      
+
+      const flakyTests = result.tests.filter((t) => t.status === "flaky");
+      const passedTests = result.tests.filter((t) => t.status === "passed");
+
       expect(flakyTests.length).toBeGreaterThan(0);
       expect(passedTests.length).toBeGreaterThan(0);
     });
@@ -494,14 +499,14 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "flaky-tests.json");
       const result = await parsePlaywrightJson(filePath);
 
-      const flakyTests = result.tests.filter(t => t.status === "flaky");
-      
-      flakyTests.forEach(test => {
+      const flakyTests = result.tests.filter((t) => t.status === "flaky");
+
+      flakyTests.forEach((test) => {
         expect(test.retries).toBeGreaterThan(0);
       });
 
-      const stableTests = result.tests.filter(t => t.status === "passed");
-      stableTests.forEach(test => {
+      const stableTests = result.tests.filter((t) => t.status === "passed");
+      stableTests.forEach((test) => {
         expect(test.retries).toBe(0);
       });
     });
@@ -510,9 +515,9 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "flaky-tests.json");
       const result = await parsePlaywrightJson(filePath);
 
-      const titles = result.tests.map(t => t.title);
-      expect(titles.some(t => t.includes("STABLE"))).toBe(true);
-      expect(titles.some(t => t.includes("FLAKY"))).toBe(true);
+      const titles = result.tests.map((t) => t.title);
+      expect(titles.some((t) => t.includes("STABLE"))).toBe(true);
+      expect(titles.some((t) => t.includes("FLAKY"))).toBe(true);
       expect(titles).toContain("should pass immediately (STABLE)");
       expect(titles).toContain("should be flaky - random failure (FLAKY)");
     });
@@ -525,10 +530,13 @@ describe("Comprehensive Fixture Coverage", () => {
       expect(result.projects).toContain("firefox");
       expect(result.projects).toContain("webkit");
 
-      const projectCounts = result.tests.reduce((acc, test) => {
-        acc[test.project] = (acc[test.project] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const projectCounts = result.tests.reduce(
+        (acc, test) => {
+          acc[test.project] = (acc[test.project] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
       expect(projectCounts.chromium).toBe(5);
       expect(projectCounts.firefox).toBe(5);
@@ -539,10 +547,13 @@ describe("Comprehensive Fixture Coverage", () => {
       const filePath = path.join(__dirname, "fixtures", "flaky-tests.json");
       const result = await parsePlaywrightJson(filePath);
 
-      const statusCounts = result.tests.reduce((acc, test) => {
-        acc[test.status] = (acc[test.status] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>);
+      const statusCounts = result.tests.reduce(
+        (acc, test) => {
+          acc[test.status] = (acc[test.status] || 0) + 1;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
       expect(result.totals.flaky).toBe(statusCounts.flaky || 0);
       expect(result.totals.passed).toBe(statusCounts.passed || 0);
@@ -559,7 +570,7 @@ describe("Comprehensive Fixture Coverage", () => {
       expect(result.shards).toHaveLength(1);
       expect(result.shards![0]).toMatchObject({
         current: 1,
-        total: 2
+        total: 2,
       });
 
       expect(result.tests).toHaveLength(15);
@@ -575,7 +586,7 @@ describe("Comprehensive Fixture Coverage", () => {
       expect(result.shards).toHaveLength(1);
       expect(result.shards![0]).toMatchObject({
         current: 2,
-        total: 2
+        total: 2,
       });
 
       expect(result.tests).toHaveLength(15);
@@ -586,22 +597,26 @@ describe("Comprehensive Fixture Coverage", () => {
     it("should have unique test content per shard", async () => {
       const shard1Path = path.join(__dirname, "fixtures", "shard1.json");
       const shard2Path = path.join(__dirname, "fixtures", "shard2.json");
-      
+
       const shard1 = await parsePlaywrightJson(shard1Path);
       const shard2 = await parsePlaywrightJson(shard2Path);
 
-      const shard1Titles = shard1.tests.map(t => t.title);
-      const shard2Titles = shard2.tests.map(t => t.title);
+      const shard1Titles = shard1.tests.map((t) => t.title);
+      const shard2Titles = shard2.tests.map((t) => t.title);
 
       // Check for shard-specific prefixes
-      expect(shard1Titles.filter(t => t.startsWith("shard1:")).length).toBeGreaterThan(0);
-      expect(shard2Titles.filter(t => t.startsWith("shard2:")).length).toBeGreaterThan(0);
+      expect(
+        shard1Titles.filter((t) => t.startsWith("shard1:")).length,
+      ).toBeGreaterThan(0);
+      expect(
+        shard2Titles.filter((t) => t.startsWith("shard2:")).length,
+      ).toBeGreaterThan(0);
 
       // Verify no overlap in test IDs
-      const shard1Ids = new Set(shard1.tests.map(t => t.id));
-      const shard2Ids = new Set(shard2.tests.map(t => t.id));
-      
-      shard2Ids.forEach(id => {
+      const shard1Ids = new Set(shard1.tests.map((t) => t.id));
+      const shard2Ids = new Set(shard2.tests.map((t) => t.id));
+
+      shard2Ids.forEach((id) => {
         expect(shard1Ids.has(id)).toBe(false);
       });
     });
@@ -609,7 +624,7 @@ describe("Comprehensive Fixture Coverage", () => {
     it("should have different project distributions per shard", async () => {
       const shard1Path = path.join(__dirname, "fixtures", "shard1.json");
       const shard2Path = path.join(__dirname, "fixtures", "shard2.json");
-      
+
       const shard1 = await parsePlaywrightJson(shard1Path);
       const shard2 = await parsePlaywrightJson(shard2Path);
 
@@ -625,7 +640,7 @@ describe("Comprehensive Fixture Coverage", () => {
     it("shards should aggregate to correct total", async () => {
       const shard1Path = path.join(__dirname, "fixtures", "shard1.json");
       const shard2Path = path.join(__dirname, "fixtures", "shard2.json");
-      
+
       const shard1 = await parsePlaywrightJson(shard1Path);
       const shard2 = await parsePlaywrightJson(shard2Path);
 
@@ -642,32 +657,38 @@ describe("Comprehensive Fixture Coverage", () => {
   describe("Edge cases and data validation", () => {
     it("should handle all test statuses correctly", async () => {
       const fixtures = ["all-success.json", "with-failures.json", "flaky-tests.json"];
-      
+
       for (const fixture of fixtures) {
         const filePath = path.join(__dirname, "fixtures", fixture);
         const result = await parsePlaywrightJson(filePath);
 
-        result.tests.forEach(test => {
+        result.tests.forEach((test) => {
           expect(["passed", "failed", "skipped", "flaky"]).toContain(test.status);
         });
       }
     });
 
     it("should have valid test IDs for all fixtures", async () => {
-      const fixtures = ["all-success.json", "with-failures.json", "flaky-tests.json", "shard1.json", "shard2.json"];
-      
+      const fixtures = [
+        "all-success.json",
+        "with-failures.json",
+        "flaky-tests.json",
+        "shard1.json",
+        "shard2.json",
+      ];
+
       for (const fixture of fixtures) {
         const filePath = path.join(__dirname, "fixtures", fixture);
         const result = await parsePlaywrightJson(filePath);
 
-        const ids = result.tests.map(t => t.id);
+        const ids = result.tests.map((t) => t.id);
         const uniqueIds = new Set(ids);
-        
+
         // All IDs should be unique
         expect(uniqueIds.size).toBe(ids.length);
-        
+
         // All IDs should be non-empty strings
-        ids.forEach(id => {
+        ids.forEach((id) => {
           expect(id).toBeTruthy();
           expect(typeof id).toBe("string");
         });
@@ -676,12 +697,12 @@ describe("Comprehensive Fixture Coverage", () => {
 
     it("should have valid fullTitle paths for all tests", async () => {
       const fixtures = ["all-success.json", "with-failures.json", "flaky-tests.json"];
-      
+
       for (const fixture of fixtures) {
         const filePath = path.join(__dirname, "fixtures", fixture);
         const result = await parsePlaywrightJson(filePath);
 
-        result.tests.forEach(test => {
+        result.tests.forEach((test) => {
           expect(test.fullTitle).toBeTruthy();
           expect(test.fullTitle).toContain(test.title);
           // Full title should use the › separator
@@ -693,15 +714,24 @@ describe("Comprehensive Fixture Coverage", () => {
     });
 
     it("should have consistent totals calculation", async () => {
-      const fixtures = ["all-success.json", "with-failures.json", "flaky-tests.json", "shard1.json", "shard2.json"];
-      
+      const fixtures = [
+        "all-success.json",
+        "with-failures.json",
+        "flaky-tests.json",
+        "shard1.json",
+        "shard2.json",
+      ];
+
       for (const fixture of fixtures) {
         const filePath = path.join(__dirname, "fixtures", fixture);
         const result = await parsePlaywrightJson(filePath);
 
         // Total should equal sum of all statuses
-        const calculatedTotal = result.totals.passed + result.totals.failed + 
-                               result.totals.skipped + result.totals.flaky;
+        const calculatedTotal =
+          result.totals.passed +
+          result.totals.failed +
+          result.totals.skipped +
+          result.totals.flaky;
         expect(result.totals.total).toBe(calculatedTotal);
 
         // Test array length should match total

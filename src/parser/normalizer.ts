@@ -79,7 +79,9 @@ function extractAnnotations(annotations?: unknown[]): TestAnnotation[] {
 /**
  * Determine test status based on Playwright status
  */
-function determineTestStatus(status: string): "passed" | "failed" | "skipped" | "flaky" {
+function determineTestStatus(
+  status: string,
+): "passed" | "failed" | "skipped" | "flaky" {
   switch (status) {
     case "expected":
       return "passed";
@@ -120,15 +122,14 @@ function flattenTests(
         const spec = specRaw as Record<string, unknown>;
         const specTitle = spec.title as string;
         const specPath = [...suitePath];
-        
+
         // Process tests within the spec
         const specTests = (spec.tests as unknown[]) || [];
         for (let testIndex = 0; testIndex < specTests.length; testIndex++) {
           const test = specTests[testIndex] as Record<string, unknown>;
           const fullTitle = [...specPath, specTitle].filter(Boolean).join(" › ");
-          const projectName = (test.projectName as string) || 
-                              (test.projectId as string) || 
-                              project;
+          const projectName =
+            (test.projectName as string) || (test.projectId as string) || project;
 
           // Get the test results (attempts)
           const results = (test.results as unknown[]) || [];
@@ -141,7 +142,7 @@ function flattenTests(
           tests.push({
             id: generateTestId(
               projectName,
-              spec.file as string || suite.file as string || "unknown",
+              (spec.file as string) || (suite.file as string) || "unknown",
               specTitle,
               testIndex,
             ),
@@ -151,7 +152,7 @@ function flattenTests(
             line: (spec.line as number) || (suite.line as number) || 0,
             column: (spec.column as number) || (suite.column as number) || 0,
             project: projectName,
-            status: determineTestStatus(test.status as string || "unknown"),
+            status: determineTestStatus((test.status as string) || "unknown"),
             duration: (lastResult.duration as number) || 0,
             retries: results.length - 1,
             error: extractError(lastResult.error || lastResultErrors[0]),
@@ -197,7 +198,7 @@ function flattenTests(
             line: (testLocation?.line as number) || (suite.line as number) || 0,
             column: (testLocation?.column as number) || (suite.column as number) || 0,
             project: projectName,
-            status: determineTestStatus(testResult.status as string || "unknown"),
+            status: determineTestStatus((testResult.status as string) || "unknown"),
             duration: (lastResult.duration as number) || 0,
             retries: (test.retries as number) || 0,
             error: extractError(lastResult.error || lastResultErrors[0]),
@@ -258,12 +259,14 @@ function extractShardInfo(
     return undefined;
   }
 
-  return [{
-    current: report.config.shard.current,
-    total: report.config.shard.total,
-    duration: report.stats?.duration || 0,
-    testCount: tests.length,
-  }];
+  return [
+    {
+      current: report.config.shard.current,
+      total: report.config.shard.total,
+      duration: report.stats?.duration || 0,
+      testCount: tests.length,
+    },
+  ];
 }
 
 /**
@@ -331,8 +334,9 @@ export function normalizeTestRun(report: PlaywrightJsonReport): NormalizedTestRu
   const startedAt = report.stats?.startTime || new Date().toISOString();
   const duration = report.stats?.duration || 0;
   // Calculate endTime from startTime and duration
-  const endedAt = report.stats?.startTime 
-    ? new Date(new Date(report.stats.startTime).getTime() + duration).toISOString()
+  const endedAt =
+    report.stats?.startTime ?
+      new Date(new Date(report.stats.startTime).getTime() + duration).toISOString()
     : new Date().toISOString();
 
   // Extract projects

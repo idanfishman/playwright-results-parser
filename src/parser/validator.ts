@@ -72,24 +72,28 @@ const TestResultSchema = z.object({
   duration: z.number(),
   error: ErrorSchema.optional(),
   errors: z.array(ErrorSchema).optional(),
-  stdout: z.array(
-    z.union([
-      z.string(),
-      z.object({
-        text: z.string().optional(),
-        buffer: z.string().optional(),
-      })
-    ])
-  ).optional(),
-  stderr: z.array(
-    z.union([
-      z.string(),
-      z.object({
-        text: z.string().optional(),
-        buffer: z.string().optional(),
-      })
-    ])
-  ).optional(),
+  stdout: z
+    .array(
+      z.union([
+        z.string(),
+        z.object({
+          text: z.string().optional(),
+          buffer: z.string().optional(),
+        }),
+      ]),
+    )
+    .optional(),
+  stderr: z
+    .array(
+      z.union([
+        z.string(),
+        z.object({
+          text: z.string().optional(),
+          buffer: z.string().optional(),
+        }),
+      ]),
+    )
+    .optional(),
   retry: z.number(),
   startTime: z.string(),
   attachments: z.array(AttachmentSchema).optional(),

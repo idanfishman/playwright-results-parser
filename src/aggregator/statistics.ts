@@ -266,7 +266,9 @@ export function getFailedTests(run: NormalizedTestRun): NormalizedTest[] {
  * ```
  */
 export function getFlakyTests(run: NormalizedTestRun): NormalizedTest[] {
-  return run.tests.filter((test) => test.status === "flaky" || (test.retries && test.retries > 0));
+  return run.tests.filter(
+    (test) => test.status === "flaky" || (test.retries && test.retries > 0),
+  );
 }
 
 /**

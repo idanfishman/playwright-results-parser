@@ -5,9 +5,15 @@ import {
   getFlakyTests,
   getTestsByProject,
   getTestsByFile,
+  aggregateShardedRuns,
+  areRunsFromSameExecution,
+  filterPredicates,
+  sortComparators,
+  combinePredicatesOr,
   type NormalizedTestRun,
   type NormalizedTest,
 } from "../src/index.js";
+import { validatePlaywrightJson, ValidationError } from "../src/parser/validator.js";
 
 describe("Statistics Calculator", () => {
   const createTestRun = (tests: NormalizedTest[]): NormalizedTestRun => ({
@@ -135,7 +141,7 @@ describe("Statistics Calculator", () => {
       expect(stats.byFile["home.spec.ts"]!.passed).toBe(1);
     });
 
-    it("should handle empty test run", () => {
+    it("should return zero statistics for empty test run", () => {
       const run = createTestRun([]);
       const stats = calculateStatistics(run);
 
@@ -152,7 +158,7 @@ describe("Statistics Calculator", () => {
       expect(stats.duration.max).toBe(0);
     });
 
-    it("should handle all tests skipped", () => {
+    it("should calculate statistics when all tests are skipped", () => {
       const tests: NormalizedTest[] = [
         createTest({ id: "1", status: "skipped", duration: 0 }),
         createTest({ id: "2", status: "skipped", duration: 0 }),
@@ -168,7 +174,7 @@ describe("Statistics Calculator", () => {
       expect(stats.duration.average).toBe(0);
     });
 
-    it("should handle missing duration values", () => {
+    it("should treat undefined durations as zero in calculations", () => {
       const tests: NormalizedTest[] = [
         createTest({ id: "1", duration: undefined as unknown as number }),
         createTest({ id: "2", duration: 100 }),
@@ -182,7 +188,7 @@ describe("Statistics Calculator", () => {
       expect(stats.duration.average).toBeCloseTo(33.33, 2);
     });
 
-    it("should handle single test", () => {
+    it("should calculate percentiles correctly for single test", () => {
       const tests: NormalizedTest[] = [createTest({ id: "1", duration: 250 })];
 
       const run = createTestRun(tests);
@@ -314,6 +320,367 @@ describe("Statistics Calculator", () => {
       const profileTests = getTestsByFile(run, "profile.spec.ts");
 
       expect(profileTests).toHaveLength(0);
+    });
+  });
+});
+
+describe("Shard Aggregation and Edge Cases", () => {
+
+  describe("Validator Integration", () => {
+    it("should throw ValidationError with correct format", () => {
+      const invalidReport = {
+        config: {},
+        // missing suites
+      };
+
+      try {
+        validatePlaywrightJson(invalidReport);
+        expect.fail("Should have thrown");
+      } catch (error) {
+        expect(error).toBeInstanceOf(ValidationError);
+        if (error instanceof ValidationError) {
+          expect(error.issues).toBeDefined();
+          expect(error.message).toContain("Invalid Playwright JSON report");
+        }
+      }
+    });
+  });
+
+  describe("Shard Execution Validation", () => {
+    it("should return false when runs lack shard information", () => {
+      const run1: NormalizedTestRun = {
+        runId: "run-1",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 1000,
+        projects: ["chromium"],
+        totals: {
+          total: 5,
+          passed: 5,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 1000,
+        },
+        tests: [],
+      };
+
+      const run2: NormalizedTestRun = {
+        ...run1,
+        runId: "run-2",
+      };
+
+      expect(areRunsFromSameExecution([run1, run2])).toBe(false);
+    });
+
+    it("should return true for empty runs array", () => {
+      expect(areRunsFromSameExecution([])).toBe(true);
+    });
+
+    it("should return false when shards array is empty", () => {
+      const run: NormalizedTestRun = {
+        runId: "run-1",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 1000,
+        projects: ["chromium"],
+        shards: [],
+        totals: {
+          total: 5,
+          passed: 5,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 1000,
+        },
+        tests: [],
+      };
+
+      expect(areRunsFromSameExecution([run, run])).toBe(false);
+    });
+
+    it("should detect mismatched total shard counts", () => {
+      const run1: NormalizedTestRun = {
+        runId: "run-1",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 1000,
+        projects: ["chromium"],
+        shards: [{ current: 1, total: 2, duration: 1000, testCount: 5 }],
+        totals: {
+          total: 5,
+          passed: 5,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 1000,
+        },
+        tests: [],
+      };
+
+      const run2: NormalizedTestRun = {
+        ...run1,
+        shards: [{ current: 2, total: 3, duration: 1000, testCount: 5 }],
+      };
+
+      expect(areRunsFromSameExecution([run1, run2])).toBe(false);
+    });
+
+    it("should aggregate metadata from runs", () => {
+      const run1: NormalizedTestRun = {
+        runId: "run-1",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 1000,
+        projects: ["chromium"],
+        totals: {
+          total: 1,
+          passed: 1,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 1000,
+        },
+        tests: [],
+        metadata: { key1: "value1" },
+      };
+
+      const run2: NormalizedTestRun = {
+        ...run1,
+        metadata: { key2: "value2" },
+      };
+
+      const aggregated = aggregateShardedRuns([run1, run2]);
+      expect(aggregated.metadata).toEqual({ key1: "value1", key2: "value2" });
+    });
+
+    it("should not include metadata when empty", () => {
+      const run: NormalizedTestRun = {
+        runId: "run-1",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 1000,
+        projects: ["chromium"],
+        totals: {
+          total: 1,
+          passed: 1,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 1000,
+        },
+        tests: [],
+      };
+
+      const aggregated = aggregateShardedRuns([run]);
+      expect(aggregated.metadata).toBeUndefined();
+    });
+  });
+
+  describe("Filter Predicates Advanced", () => {
+    const test1: NormalizedTest = {
+      id: "test-1",
+      title: "Test 1",
+      fullTitle: "Suite > Test 1",
+      file: "auth.spec.ts",
+      line: 1,
+      column: 1,
+      project: "chromium",
+      status: "passed",
+      duration: 100,
+      retries: 0,
+    };
+
+    const test2: NormalizedTest = {
+      id: "test-2",
+      title: "Test 2",
+      fullTitle: "Suite > Test 2",
+      file: "home.spec.ts",
+      line: 1,
+      column: 1,
+      project: "firefox",
+      status: "passed",
+      duration: 200,
+      retries: 0,
+    };
+
+    it("should filter by project", () => {
+      const filter = filterPredicates.byProject("chromium");
+      expect(filter(test1)).toBe(true);
+      expect(filter(test2)).toBe(false);
+    });
+
+    it("should filter by file", () => {
+      const filter = filterPredicates.byFile("auth.spec.ts");
+      expect(filter(test1)).toBe(true);
+      expect(filter(test2)).toBe(false);
+    });
+  });
+
+  describe("Sort Comparators Edge Cases", () => {
+    it("should treat undefined duration as zero when sorting descending", () => {
+      const test1: NormalizedTest = {
+        id: "test-1",
+        title: "Test 1",
+        fullTitle: "Test 1",
+        file: "test.spec.ts",
+        line: 1,
+        column: 1,
+        project: "chromium",
+        status: "passed",
+        duration: 100,
+        retries: 0,
+      };
+
+      const test2: NormalizedTest = {
+        id: "test-2",
+        title: "Test 2",
+        fullTitle: "Test 2",
+        file: "test.spec.ts",
+        line: 2,
+        column: 1,
+        project: "chromium",
+        status: "passed",
+        duration: undefined,
+        retries: 0,
+      };
+
+      const sorted = [test1, test2].sort(sortComparators.byDurationDesc);
+      expect(sorted[0]).toBe(test1); // 100ms
+      expect(sorted[1]).toBe(test2); // undefined (treated as 0)
+    });
+
+    it("should treat undefined duration as zero when sorting ascending", () => {
+      const test1: NormalizedTest = {
+        id: "test-1",
+        title: "Test 1",
+        fullTitle: "Test 1",
+        file: "test.spec.ts",
+        line: 1,
+        column: 1,
+        project: "chromium",
+        status: "passed",
+        duration: undefined,
+        retries: 0,
+      };
+
+      const test2: NormalizedTest = {
+        id: "test-2",
+        title: "Test 2",
+        fullTitle: "Test 2",
+        file: "test.spec.ts",
+        line: 2,
+        column: 1,
+        project: "chromium",
+        status: "passed",
+        duration: 50,
+        retries: 0,
+      };
+
+      const sorted = [test2, test1].sort(sortComparators.byDurationAsc);
+      expect(sorted[0]).toBe(test1); // undefined (treated as 0)
+      expect(sorted[1]).toBe(test2); // 50ms
+    });
+
+    it("should place unknown status last when sorting by status", () => {
+      const test1: NormalizedTest = {
+        id: "test-1",
+        title: "Test 1",
+        fullTitle: "Test 1",
+        file: "test.spec.ts",
+        line: 1,
+        column: 1,
+        project: "chromium",
+        status: "unknown" as "passed" | "failed" | "skipped" | "flaky",
+        duration: 100,
+        retries: 0,
+      };
+
+      const test2: NormalizedTest = {
+        id: "test-2",
+        title: "Test 2",
+        fullTitle: "Test 2",
+        file: "test.spec.ts",
+        line: 2,
+        column: 1,
+        project: "chromium",
+        status: "passed",
+        duration: 100,
+        retries: 0,
+      };
+
+      const sorted = [test1, test2].sort(sortComparators.byStatus);
+      expect(sorted[0]).toBe(test2); // passed comes before unknown
+      expect(sorted[1]).toBe(test1);
+    });
+  });
+
+  describe("OR Logic Filter Combination", () => {
+    const test1: NormalizedTest = {
+      id: "test-1",
+      title: "Test",
+      fullTitle: "Suite > Test",
+      file: "test.spec.ts",
+      line: 1,
+      column: 1,
+      project: "chromium",
+      status: "failed",
+      duration: 100,
+      retries: 0,
+    };
+
+    const test2: NormalizedTest = {
+      id: "test-2",
+      title: "Test",
+      fullTitle: "Suite > Test",
+      file: "test.spec.ts",
+      line: 2,
+      column: 1,
+      project: "firefox",
+      status: "flaky",
+      duration: 200,
+      retries: 1,
+    };
+
+    const test3: NormalizedTest = {
+      id: "test-3",
+      title: "Test",
+      fullTitle: "Suite > Test",
+      file: "test.spec.ts",
+      line: 3,
+      column: 1,
+      project: "webkit",
+      status: "passed",
+      duration: 50,
+      retries: 0,
+    };
+
+    it("should combine filters with OR logic", () => {
+      const combined = combinePredicatesOr(
+        filterPredicates.failed,
+        filterPredicates.flaky,
+      );
+      expect(combined(test1)).toBe(true); // failed
+      expect(combined(test2)).toBe(true); // flaky
+      expect(combined(test3)).toBe(false); // passed
+    });
+
+    it("should return false when all filters fail", () => {
+      const combined = combinePredicatesOr(
+        () => false,
+        () => false,
+        () => false,
+      );
+      expect(combined(test1)).toBe(false);
+    });
+
+    it("should return true when at least one filter passes", () => {
+      const combined = combinePredicatesOr(
+        () => false,
+        () => true,
+        () => false,
+      );
+      expect(combined(test1)).toBe(true);
     });
   });
 });

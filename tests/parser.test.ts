@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { promises as fs } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -8,10 +8,18 @@ import {
   ValidationError,
   validatePlaywrightJson,
   normalizeTestRun,
-  aggregateShardedRuns,
   areRunsFromSameExecution,
+  calculateStatistics,
+  filterPredicates,
+  sortComparators,
+  compoundSort,
+  combinePredicates,
+  reverseSort,
+  aggregateShardedRuns,
   type NormalizedTestRun,
+  type NormalizedTest,
 } from "../src/index.js";
+import type { PlaywrightJsonReport } from "../src/parser/validator.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -357,7 +365,7 @@ describe("Normalizer", () => {
   });
 });
 
-describe("Comprehensive Fixture Coverage", () => {
+describe("Complex Fixture Validation", () => {
   describe("all-success.json - Complete success scenario", () => {
     it("should parse all 6 passing tests correctly", async () => {
       const filePath = path.join(__dirname, "fixtures", "all-success.json");
@@ -739,4 +747,1019 @@ describe("Comprehensive Fixture Coverage", () => {
       }
     });
   });
+});
+describe("Parser Advanced Features", () => {
+
+describe("Error Handling and Edge Cases", () => {
+
+  describe("Shard aggregation edge cases", () => {
+    it("should detect duplicate shard numbers in runs", () => {
+      const run1: NormalizedTestRun = {
+        runId: "run-1",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 1000,
+        projects: ["chromium"],
+        shards: [{ current: 1, total: 2, duration: 1000, testCount: 5 }],
+        totals: {
+          total: 5,
+          passed: 5,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 1000,
+        },
+        tests: [],
+      };
+
+      const run2: NormalizedTestRun = {
+        ...run1,
+        shards: [{ current: 1, total: 2, duration: 1000, testCount: 5 }], // Duplicate shard number
+      };
+
+      expect(areRunsFromSameExecution([run1, run2])).toBe(false);
+    });
+  });
+
+  describe("Statistics edge cases", () => {
+    it("should calculate statistics when all test durations are zero", () => {
+      const testRun: NormalizedTestRun = {
+        runId: "test-run",
+        startedAt: new Date().toISOString(),
+        endedAt: new Date().toISOString(),
+        duration: 0,
+        projects: ["test"],
+        totals: {
+          total: 3,
+          passed: 3,
+          failed: 0,
+          skipped: 0,
+          flaky: 0,
+          duration: 0,
+        },
+        tests: [
+          {
+            id: "test-1",
+            title: "Test 1",
+            fullTitle: "Suite > Test 1",
+            file: "test.spec.ts",
+            line: 1,
+            column: 1,
+            project: "test",
+            status: "passed",
+            duration: 0,
+            retries: 0,
+          },
+          {
+            id: "test-2",
+            title: "Test 2",
+            fullTitle: "Suite > Test 2",
+            file: "test.spec.ts",
+            line: 2,
+            column: 1,
+            project: "test",
+            status: "passed",
+            duration: 0,
+            retries: 0,
+          },
+          {
+            id: "test-3",
+            title: "Test 3",
+            fullTitle: "Suite > Test 3",
+            file: "test.spec.ts",
+            line: 3,
+            column: 1,
+            project: "test",
+            status: "passed",
+            duration: 0,
+            retries: 0,
+          },
+        ],
+      };
+
+      const stats = calculateStatistics(testRun);
+      expect(stats.duration.min).toBe(0);
+      expect(stats.duration.max).toBe(0);
+      expect(stats.duration.total).toBe(0);
+      expect(stats.duration.average).toBe(0);
+      expect(stats.duration.median).toBe(0);
+      expect(stats.duration.p95).toBe(0);
+    });
+  });
+
+  describe("Validator error handling", () => {
+    it("should propagate non-Zod errors from validation", () => {
+      // Mock the parse method to throw a non-ZodError
+      const originalParse = JSON.parse;
+      JSON.parse = vi.fn().mockImplementationOnce(() => {
+        throw new Error("Generic error");
+      });
+
+      expect(() => {
+        // This will internally call validatePlaywrightJson
+        JSON.parse("{}");
+      }).toThrow("Generic error");
+
+      JSON.parse = originalParse;
+    });
+
+    it("should include issues in ValidationError", () => {
+      const error = new ValidationError("Test error", [
+        {
+          code: "invalid_type",
+          expected: "string",
+          received: "number",
+          path: ["test"],
+          message: "Expected string, received number",
+        },
+      ]);
+
+      expect(error.issues).toBeDefined();
+      expect(error.issues).toHaveLength(1);
+      expect(error.issues![0].code).toBe("invalid_type");
+    });
+  });
+
+  describe("Filter predicates edge cases", () => {
+    const testWithError: NormalizedTest = {
+      id: "test-1",
+      title: "Test with error",
+      fullTitle: "Suite > Test with error",
+      file: "test.spec.ts",
+      line: 1,
+      column: 1,
+      project: "chromium",
+      status: "failed",
+      duration: 100,
+      retries: 0,
+      error: {
+        message: "Test failed",
+      },
+    };
+
+    const testWithAttachments: NormalizedTest = {
+      id: "test-2",
+      title: "Test with attachments",
+      fullTitle: "Suite > Test with attachments",
+      file: "test.spec.ts",
+      line: 2,
+      column: 1,
+      project: "firefox",
+      status: "passed",
+      duration: 200,
+      retries: 0,
+      attachments: [
+        {
+          name: "screenshot",
+          contentType: "image/png",
+        },
+      ],
+    };
+
+    const testFlaky: NormalizedTest = {
+      id: "test-3",
+      title: "Flaky test",
+      fullTitle: "Suite > Flaky test",
+      file: "test2.spec.ts",
+      line: 3,
+      column: 1,
+      project: "webkit",
+      status: "passed",
+      duration: 300,
+      retries: 2,
+    };
+
+    it("should filter tests with errors", () => {
+      expect(filterPredicates.withErrors(testWithError)).toBe(true);
+      expect(filterPredicates.withErrors(testWithAttachments)).toBe(false);
+    });
+
+    it("should filter tests with attachments", () => {
+      expect(filterPredicates.withAttachments(testWithAttachments)).toBe(true);
+      expect(filterPredicates.withAttachments(testWithError)).toBe(false);
+    });
+
+    it("should filter flaky tests by retries", () => {
+      expect(filterPredicates.flaky(testFlaky)).toBe(true);
+      expect(filterPredicates.flaky(testWithError)).toBe(false);
+    });
+
+    it("should filter by title with string pattern", () => {
+      const filter = filterPredicates.byTitle("error");
+      expect(filter(testWithError)).toBe(true);
+      expect(filter(testWithAttachments)).toBe(false);
+    });
+
+    it("should filter by title with regex pattern", () => {
+      const filter = filterPredicates.byTitle(/^Test with/);
+      expect(filter(testWithError)).toBe(true);
+      expect(filter(testWithAttachments)).toBe(true);
+      expect(filter(testFlaky)).toBe(false);
+    });
+
+    it("should filter by full title with string pattern", () => {
+      const filter = filterPredicates.byFullTitle("Suite >");
+      expect(filter(testWithError)).toBe(true);
+      expect(filter(testWithAttachments)).toBe(true);
+      expect(filter(testFlaky)).toBe(true);
+    });
+
+    it("should filter by full title with regex pattern", () => {
+      const filter = filterPredicates.byFullTitle(/Flaky/);
+      expect(filter(testFlaky)).toBe(true);
+      expect(filter(testWithError)).toBe(false);
+    });
+  });
+
+  describe("Sort comparators edge cases", () => {
+    const test1: NormalizedTest = {
+      id: "test-1",
+      title: "A Test",
+      fullTitle: "Suite > A Test",
+      file: "a.spec.ts",
+      line: 10,
+      column: 5,
+      project: "chromium",
+      status: "failed",
+      duration: 100,
+      retries: 2,
+    };
+
+    const test2: NormalizedTest = {
+      id: "test-2",
+      title: "B Test",
+      fullTitle: "Suite > B Test",
+      file: "b.spec.ts",
+      line: 5,
+      column: 10,
+      project: "firefox",
+      status: "passed",
+      duration: 200,
+      retries: 0,
+    };
+
+    const test3: NormalizedTest = {
+      id: "test-3",
+      title: "C Test",
+      fullTitle: "Suite > C Test",
+      file: "a.spec.ts",
+      line: 10,
+      column: 1,
+      project: "webkit",
+      status: "flaky",
+      duration: undefined,
+      retries: 1,
+    };
+
+    it("should sort by duration ascending with undefined values", () => {
+      const sorted = [test1, test2, test3].sort(sortComparators.byDurationAsc);
+      expect(sorted[0]).toBe(test3); // undefined duration treated as 0
+      expect(sorted[1]).toBe(test1);
+      expect(sorted[2]).toBe(test2);
+    });
+
+    it("should sort by title", () => {
+      const sorted = [test2, test3, test1].sort(sortComparators.byTitle);
+      expect(sorted[0]).toBe(test1);
+      expect(sorted[1]).toBe(test2);
+      expect(sorted[2]).toBe(test3);
+    });
+
+    it("should sort by full title", () => {
+      const sorted = [test2, test3, test1].sort(sortComparators.byFullTitle);
+      expect(sorted[0]).toBe(test1);
+      expect(sorted[1]).toBe(test2);
+      expect(sorted[2]).toBe(test3);
+    });
+
+    it("should sort by file", () => {
+      const sorted = [test2, test1, test3].sort(sortComparators.byFile);
+      expect(sorted[0]).toBe(test1);
+      expect(sorted[1]).toBe(test3);
+      expect(sorted[2]).toBe(test2);
+    });
+
+    it("should sort by project", () => {
+      const sorted = [test3, test1, test2].sort(sortComparators.byProject);
+      expect(sorted[0]).toBe(test1);
+      expect(sorted[1]).toBe(test2);
+      expect(sorted[2]).toBe(test3);
+    });
+
+    it("should sort by retries", () => {
+      const sorted = [test2, test3, test1].sort(sortComparators.byRetries);
+      expect(sorted[0]).toBe(test1); // 2 retries
+      expect(sorted[1]).toBe(test3); // 1 retry
+      expect(sorted[2]).toBe(test2); // 0 retries
+    });
+
+    it("should sort by location with all fields", () => {
+      const sorted = [test2, test3, test1].sort(sortComparators.byLocation);
+      expect(sorted[0]).toBe(test3); // a.spec.ts, line 10, column 1
+      expect(sorted[1]).toBe(test1); // a.spec.ts, line 10, column 5
+      expect(sorted[2]).toBe(test2); // b.spec.ts
+    });
+
+    it("should sort unknown status values correctly", () => {
+      const testUnknown: NormalizedTest = {
+        ...test1,
+        status: "unknown" as "passed" | "failed" | "skipped" | "flaky",
+      };
+      const sorted = [testUnknown, test2].sort(sortComparators.byStatus);
+      expect(sorted[0]).toBe(test2); // passed (2) comes before unknown (4)
+      expect(sorted[1]).toBe(testUnknown);
+    });
+  });
+
+  describe("Compound sort", () => {
+    const test1: NormalizedTest = {
+      id: "test-1",
+      title: "Test A",
+      fullTitle: "Suite > Test A",
+      file: "test.spec.ts",
+      line: 1,
+      column: 1,
+      project: "chromium",
+      status: "failed",
+      duration: 100,
+      retries: 0,
+    };
+
+    const test2: NormalizedTest = {
+      id: "test-2",
+      title: "Test B",
+      fullTitle: "Suite > Test B",
+      file: "test.spec.ts",
+      line: 2,
+      column: 1,
+      project: "chromium",
+      status: "failed",
+      duration: 200,
+      retries: 0,
+    };
+
+    const test3: NormalizedTest = {
+      id: "test-3",
+      title: "Test C",
+      fullTitle: "Suite > Test C",
+      file: "test.spec.ts",
+      line: 3,
+      column: 1,
+      project: "chromium",
+      status: "passed",
+      duration: 50,
+      retries: 0,
+    };
+
+    it("should return 0 when all comparators return 0", () => {
+      const comparator = compoundSort(
+        () => 0,
+        () => 0,
+        () => 0,
+      );
+      expect(comparator(test1, test2)).toBe(0);
+    });
+
+    it("should apply multiple sort criteria in order", () => {
+      const multiSort = compoundSort(
+        sortComparators.byStatus,
+        sortComparators.byDurationDesc,
+      );
+
+      const sorted = [test3, test1, test2].sort(multiSort);
+      expect(sorted[0]).toBe(test2); // failed, 200ms
+      expect(sorted[1]).toBe(test1); // failed, 100ms
+      expect(sorted[2]).toBe(test3); // passed, 50ms
+    });
+  });
+
+  describe("Reverse sort", () => {
+    const test1: NormalizedTest = {
+      id: "test-1",
+      title: "A",
+      fullTitle: "Suite > A",
+      file: "test.spec.ts",
+      line: 1,
+      column: 1,
+      project: "chromium",
+      status: "passed",
+      duration: 100,
+      retries: 0,
+    };
+
+    const test2: NormalizedTest = {
+      id: "test-2",
+      title: "B",
+      fullTitle: "Suite > B",
+      file: "test.spec.ts",
+      line: 2,
+      column: 1,
+      project: "chromium",
+      status: "passed",
+      duration: 200,
+      retries: 0,
+    };
+
+    it("should reverse sort order", () => {
+      const reversed = reverseSort(sortComparators.byTitle);
+      const sorted = [test1, test2].sort(reversed);
+      expect(sorted[0]).toBe(test2);
+      expect(sorted[1]).toBe(test1);
+    });
+  });
+
+  describe("Combine predicates", () => {
+    const test1: NormalizedTest = {
+      id: "test-1",
+      title: "Test",
+      fullTitle: "Suite > Test",
+      file: "test.spec.ts",
+      line: 1,
+      column: 1,
+      project: "chromium",
+      status: "failed",
+      duration: 6000,
+      retries: 0,
+    };
+
+    const test2: NormalizedTest = {
+      id: "test-2",
+      title: "Test",
+      fullTitle: "Suite > Test",
+      file: "test.spec.ts",
+      line: 2,
+      column: 1,
+      project: "firefox",
+      status: "passed",
+      duration: 100,
+      retries: 0,
+    };
+
+    it("should combine multiple filters with AND logic", () => {
+      const combined = combinePredicates(
+        filterPredicates.failed,
+        filterPredicates.slow(5000),
+      );
+      expect(combined(test1)).toBe(true);
+      expect(combined(test2)).toBe(false);
+    });
+
+    it("should return true when all filters pass", () => {
+      const combined = combinePredicates(
+        () => true,
+        () => true,
+        () => true,
+      );
+      expect(combined(test1)).toBe(true);
+    });
+
+    it("should return false when any filter fails", () => {
+      const combined = combinePredicates(
+        () => true,
+        () => false,
+        () => true,
+      );
+      expect(combined(test1)).toBe(false);
+    });
+  });
+});
+describe("Normalizer Complex Structures", () => {
+  describe("Old test format (suite.tests)", () => {
+    it("should parse old format tests with explicit location property", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "Old Format Suite",
+            file: "old-format.spec.ts",
+            line: 1,
+            column: 1,
+            tests: [
+              {
+                title: "Old Test with Location",
+                location: {
+                  file: "specific-location.spec.ts",
+                  line: 25,
+                  column: 10,
+                },
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    projectName: "chromium",
+                    results: [
+                      {
+                        workerIndex: 0,
+                        duration: 150,
+                        retry: 0,
+                        startTime: "2024-01-01T00:00:00.000Z",
+                        error: {
+                          message: "Test error",
+                          stack: "Error stack trace",
+                        },
+                        attachments: [
+                          {
+                            name: "screenshot",
+                            contentType: "image/png",
+                            path: "/tmp/screenshot.png",
+                          },
+                        ],
+                      },
+                    ],
+                    annotations: [
+                      {
+                        type: "skip",
+                        description: "Skipped in CI",
+                      },
+                    ],
+                    status: "unexpected",
+                  },
+                ],
+                retries: 2,
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+
+      expect(normalized.tests).toHaveLength(1);
+      const test = normalized.tests[0];
+
+      // Verify location is taken from test.location
+      expect(test.file).toBe("specific-location.spec.ts");
+      expect(test.line).toBe(25);
+      expect(test.column).toBe(10);
+
+      // Verify other properties
+      expect(test.project).toBe("chromium");
+      expect(test.status).toBe("failed");
+      expect(test.duration).toBe(150);
+      expect(test.retries).toBe(2);
+      expect(test.error?.message).toBe("Test error");
+      expect(test.attachments).toHaveLength(1);
+      expect(test.annotations).toHaveLength(1);
+    });
+
+    it("should fallback to suite location when test location is missing", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "Suite",
+            file: "suite-file.spec.ts",
+            line: 10,
+            column: 5,
+            tests: [
+              {
+                title: "Test without location",
+                // No location property
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    projectName: "firefox",
+                    results: [
+                      {
+                        workerIndex: 0,
+                        duration: 100,
+                        retry: 0,
+                        startTime: "2024-01-01T00:00:00.000Z",
+                      },
+                    ],
+                    status: "expected",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+
+      expect(normalized.tests).toHaveLength(1);
+      const test = normalized.tests[0];
+
+      // Should fallback to suite file/line/column
+      expect(test.file).toBe("suite-file.spec.ts");
+      expect(test.line).toBe(10);
+      expect(test.column).toBe(5);
+      expect(test.project).toBe("firefox");
+    });
+
+    it("should parse tests with no execution results", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "Suite",
+            tests: [
+              {
+                title: "Test with no results",
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    results: [], // Empty results
+                    status: "skipped",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+
+      expect(normalized.tests).toHaveLength(1);
+      const test = normalized.tests[0];
+
+      expect(test.status).toBe("skipped");
+      expect(test.duration).toBe(0);
+      expect(test.error).toBeUndefined();
+      expect(test.attachments).toEqual([]);
+    });
+
+    it("should use last result from multiple test attempts", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "Suite",
+            tests: [
+              {
+                title: "Test with retries",
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    results: [
+                      {
+                        workerIndex: 0,
+                        duration: 50,
+                        retry: 0,
+                        startTime: "2024-01-01T00:00:00.000Z",
+                        errors: [{ message: "First attempt failed" }],
+                      },
+                      {
+                        workerIndex: 0,
+                        duration: 75,
+                        retry: 1,
+                        startTime: "2024-01-01T00:00:01.000Z",
+                        errors: [{ message: "Second attempt failed" }],
+                      },
+                      {
+                        workerIndex: 0,
+                        duration: 100,
+                        retry: 2,
+                        startTime: "2024-01-01T00:00:02.000Z",
+                      },
+                    ],
+                    status: "expected",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+
+      expect(normalized.tests).toHaveLength(1);
+      const test = normalized.tests[0];
+
+      // Should use the last result
+      expect(test.duration).toBe(100);
+      expect(test.error).toBeUndefined(); // Last attempt succeeded
+    });
+
+    it("should preserve full hierarchy in nested suite structures", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "Root",
+            suites: [
+              {
+                title: "Nested",
+                tests: [
+                  {
+                    title: "Deeply nested test",
+                    tests: [
+                      {
+                        timeout: 30000,
+                        expectedStatus: "passed",
+                        projectName: "webkit",
+                        results: [
+                          {
+                            workerIndex: 0,
+                            duration: 200,
+                            retry: 0,
+                            startTime: "2024-01-01T00:00:00.000Z",
+                          },
+                        ],
+                        status: "expected",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+
+      expect(normalized.tests).toHaveLength(1);
+      const test = normalized.tests[0];
+
+      expect(test.fullTitle).toBe("Root › Nested › Deeply nested test");
+      expect(test.project).toBe("webkit");
+    });
+  });
+
+  describe("Project extraction from nested structures", () => {
+    it("should extract projects from specs.tests.tests structure", () => {
+      const report: PlaywrightJsonReport = {
+        config: {
+          projects: [],
+        },
+        suites: [
+          {
+            title: "Root",
+            specs: [
+              {
+                title: "Spec",
+                ok: true,
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    tests: [
+                      {
+                        projectName: "extracted-chromium",
+                        results: [],
+                      },
+                    ],
+                    results: [],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+      expect(normalized.projects).toContain("extracted-chromium");
+    });
+
+    it("should extract projects from suite.tests.tests structure", () => {
+      const report: PlaywrightJsonReport = {
+        config: {
+          projects: [],
+        },
+        suites: [
+          {
+            title: "Root",
+            tests: [
+              {
+                title: "Test",
+                tests: [
+                  {
+                    projectName: "extracted-firefox",
+                    results: [],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+      expect(normalized.projects).toContain("extracted-firefox");
+    });
+
+    it("should extract projects from deeply nested suite hierarchies", () => {
+      const report: PlaywrightJsonReport = {
+        config: {
+          projects: [{ name: "config-project" }],
+        },
+        suites: [
+          {
+            title: "Level1",
+            suites: [
+              {
+                title: "Level2",
+                suites: [
+                  {
+                    title: "Level3",
+                    specs: [
+                      {
+                        title: "DeepSpec",
+                        ok: true,
+                        tests: [
+                          {
+                            timeout: 30000,
+                            expectedStatus: "passed",
+                            tests: [
+                              {
+                                projectName: "deep-webkit",
+                                results: [],
+                              },
+                            ],
+                            results: [],
+                          },
+                        ],
+                      },
+                    ],
+                    tests: [
+                      {
+                        title: "DeepTest",
+                        tests: [
+                          {
+                            projectName: "deep-firefox",
+                            results: [],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+      expect(normalized.projects).toContain("config-project");
+      expect(normalized.projects).toContain("deep-webkit");
+      expect(normalized.projects).toContain("deep-firefox");
+    });
+
+    it("should extract projects from both specs and tests formats", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "Mixed Suite",
+            specs: [
+              {
+                title: "Spec Test",
+                ok: true,
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    tests: [
+                      {
+                        projectName: "spec-project",
+                        results: [],
+                      },
+                    ],
+                    results: [],
+                  },
+                ],
+              },
+            ],
+            tests: [
+              {
+                title: "Old Test",
+                tests: [
+                  {
+                    projectName: "test-project",
+                    results: [],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+      expect(normalized.projects).toContain("spec-project");
+      expect(normalized.projects).toContain("test-project");
+    });
+  });
+
+  describe("Edge cases with missing or default values", () => {
+    it("should default to 'unknown' when suite has no file property", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "No File Suite",
+            // No file property
+            tests: [
+              {
+                title: "Test",
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    results: [
+                      {
+                        workerIndex: 0,
+                        duration: 100,
+                        retry: 0,
+                        startTime: "2024-01-01T00:00:00.000Z",
+                      },
+                    ],
+                    status: "expected",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+      expect(normalized.tests).toHaveLength(1);
+      expect(normalized.tests[0].file).toBe("unknown");
+      expect(normalized.tests[0].line).toBe(0);
+      expect(normalized.tests[0].column).toBe(0);
+    });
+
+    it("should default to 'default' project when projectName is missing", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "Suite",
+            tests: [
+              {
+                title: "Test",
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    // No projectName
+                    results: [
+                      {
+                        workerIndex: 0,
+                        duration: 100,
+                        retry: 0,
+                        startTime: "2024-01-01T00:00:00.000Z",
+                      },
+                    ],
+                    status: "expected",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+      expect(normalized.tests).toHaveLength(1);
+      expect(normalized.tests[0].project).toBe("default");
+    });
+
+    it("should extract error from errors array when error property is missing", () => {
+      const report: PlaywrightJsonReport = {
+        config: {},
+        suites: [
+          {
+            title: "Suite",
+            tests: [
+              {
+                title: "Test with errors array",
+                tests: [
+                  {
+                    timeout: 30000,
+                    expectedStatus: "passed",
+                    results: [
+                      {
+                        workerIndex: 0,
+                        duration: 100,
+                        retry: 0,
+                        startTime: "2024-01-01T00:00:00.000Z",
+                        errors: [{ message: "Error from errors array" }],
+                      },
+                    ],
+                    status: "unexpected",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      } as unknown as PlaywrightJsonReport;
+
+      const normalized = normalizeTestRun(report);
+      expect(normalized.tests).toHaveLength(1);
+      expect(normalized.tests[0].error?.message).toBe("Error from errors array");
+    });
+  });
+});
 });

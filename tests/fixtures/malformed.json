@@ -1,6 +1,4 @@
 {
-  "config": {
-    "rootDir": "/project"
-  },
-  "suites": "This should be an array, not a string"
+  "config": {},
+  "suites": "not an array"
 }

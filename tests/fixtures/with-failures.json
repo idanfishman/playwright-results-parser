@@ -1,26 +1,136 @@
 {
   "config": {
-    "rootDir": "/project",
+    "configFile": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/playwright.config.ts",
+    "rootDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 7
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
     "projects": [
       {
-        "name": "chromium"
+        "outputDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
       },
       {
-        "name": "firefox"
+        "outputDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 7
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
       }
-    ]
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.2",
+    "workers": 7,
+    "webServer": null
   },
   "suites": [
     {
-      "title": "Authentication",
-      "file": "tests/auth.spec.ts",
-      "specs": [
+      "title": "02-with-failures.spec.ts",
+      "file": "02-with-failures.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
         {
-          "title": "auth.spec.ts",
-          "ok": false,
-          "tests": [
+          "title": "With Failures Scenario",
+          "file": "02-with-failures.spec.ts",
+          "line": 3,
+          "column": 6,
+          "specs": [
             {
-              "title": "should login successfully",
+              "title": "should have correct page title (PASS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1753,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:13.694Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-a596f55daf595529b26a",
+              "file": "02-with-failures.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "should find non-existent element (FAIL)",
               "ok": false,
               "tags": [],
               "tests": [
@@ -28,126 +138,1025 @@
                   "timeout": 30000,
                   "annotations": [],
                   "expectedStatus": "passed",
+                  "projectId": "chromium",
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
                       "status": "failed",
-                      "duration": 5432,
+                      "duration": 7237,
                       "error": {
-                        "message": "Timeout waiting for selector",
-                        "stack": "Error: Timeout waiting for selector\n    at auth.spec.ts:15:5",
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:12:60",
                         "location": {
-                          "file": "tests/auth.spec.ts",
-                          "line": 15,
-                          "column": 5
-                        }
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 60,
+                          "line": 12
+                        },
+                        "snippet": "  10 |     await page.goto('https://playwright.dev/');\n  11 |     // This will fail - looking for element that doesn't exist\n> 12 |     await expect(page.getByTestId('non-existent-element')).toBeVisible();\n     |                                                            ^\n  13 |   });\n  14 |\n  15 |   test('should have wrong page title (FAIL)', async ({ page }) => {"
                       },
                       "errors": [
                         {
-                          "message": "Timeout waiting for selector",
-                          "stack": "Error: Timeout waiting for selector\n    at auth.spec.ts:15:5"
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 60,
+                            "line": 12
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n\n\n  10 |     await page.goto('https://playwright.dev/');\n  11 |     // This will fail - looking for element that doesn't exist\n> 12 |     await expect(page.getByTestId('non-existent-element')).toBeVisible();\n     |                                                            ^\n  13 |   });\n  14 |\n  15 |   test('should have wrong page title (FAIL)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:12:60"
                         }
                       ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2024-01-01T10:00:00.000Z",
+                      "startTime": "2025-08-09T19:37:13.694Z",
+                      "annotations": [],
                       "attachments": [
                         {
-                          "name": "screenshot",
-                          "path": "test-results/auth-login-chromium/screenshot.png",
-                          "contentType": "image/png"
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-e396b--non-existent-element-FAIL--chromium/error-context.md"
                         }
-                      ]
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 60,
+                        "line": 12
+                      }
                     }
                   ],
                   "status": "unexpected"
-                },
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-17a0841923d786411915",
+              "file": "02-with-failures.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "should have wrong page title (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
                 {
                   "timeout": 30000,
                   "annotations": [],
                   "expectedStatus": "passed",
-                  "projectName": "firefox",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 1,
-                      "status": "passed",
-                      "duration": 3210,
-                      "errors": [],
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 6737,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:18:24",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 24,
+                          "line": 18
+                        },
+                        "snippet": "  16 |     await page.goto('https://playwright.dev/');\n  17 |     // This will fail - wrong expected title\n> 18 |     await expect(page).toHaveTitle('Wrong Title That Does Not Exist');\n     |                        ^\n  19 |   });\n  20 |\n  21 |   test('should display main heading (PASS)', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 24,
+                            "line": 18
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n\n\n  16 |     await page.goto('https://playwright.dev/');\n  17 |     // This will fail - wrong expected title\n> 18 |     await expect(page).toHaveTitle('Wrong Title That Does Not Exist');\n     |                        ^\n  19 |   });\n  20 |\n  21 |   test('should display main heading (PASS)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:18:24"
+                        }
+                      ],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2024-01-01T10:00:05.500Z",
-                      "attachments": []
+                      "startTime": "2025-08-09T19:37:13.695Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-9fe17-have-wrong-page-title-FAIL--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 24,
+                        "line": 18
+                      }
                     }
                   ],
-                  "status": "expected"
+                  "status": "unexpected"
                 }
               ],
-              "id": "test-1",
-              "retries": 0,
-              "location": {
-                "file": "tests/auth.spec.ts",
-                "line": 10,
-                "column": 1
-              }
+              "id": "ea52ec72593d1c3dc28e-d0c4965145ca58c5d47e",
+              "file": "02-with-failures.spec.ts",
+              "line": 15,
+              "column": 7
             },
             {
-              "title": "should logout successfully",
+              "title": "should display main heading (PASS)",
               "ok": true,
               "tags": [],
               "tests": [
                 {
                   "timeout": 30000,
-                  "annotations": [
-                    {
-                      "type": "slow",
-                      "description": "This test is slow"
-                    }
-                  ],
+                  "annotations": [],
                   "expectedStatus": "passed",
+                  "projectId": "chromium",
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 2100,
+                      "duration": 3045,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2024-01-01T10:00:06.000Z",
+                      "startTime": "2025-08-09T19:37:13.697Z",
+                      "annotations": [],
                       "attachments": []
                     }
                   ],
                   "status": "expected"
                 }
               ],
-              "id": "test-2",
-              "retries": 0,
-              "location": {
-                "file": "tests/auth.spec.ts",
-                "line": 25,
-                "column": 1
-              }
+              "id": "ea52ec72593d1c3dc28e-701c02d19eeafe231522",
+              "file": "02-with-failures.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "should find element with wrong text (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "failed",
+                      "duration": 7166,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:29:74",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 74,
+                          "line": 29
+                        },
+                        "snippet": "  27 |     await page.goto('https://playwright.dev/');\n  28 |     // This will fail - looking for text that doesn't exist\n> 29 |     await expect(page.getByText('This text does not exist on the page')).toBeVisible();\n     |                                                                          ^\n  30 |   });\n  31 |\n  32 |   test('should have Get started link (PASS)', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 74,
+                            "line": 29
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n\n\n  27 |     await page.goto('https://playwright.dev/');\n  28 |     // This will fail - looking for text that doesn't exist\n> 29 |     await expect(page.getByText('This text does not exist on the page')).toBeVisible();\n     |                                                                          ^\n  30 |   });\n  31 |\n  32 |   test('should have Get started link (PASS)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:29:74"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:13.696Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-d7a19-ement-with-wrong-text-FAIL--chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 74,
+                        "line": 29
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-6f89a626cb906c9e0277",
+              "file": "02-with-failures.spec.ts",
+              "line": 26,
+              "column": 7
+            },
+            {
+              "title": "should have Get started link (PASS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2189,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:13.697Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-8d983244927a3944f236",
+              "file": "02-with-failures.spec.ts",
+              "line": 32,
+              "column": 7
+            },
+            {
+              "title": "should click non-existent button (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "timedOut",
+                      "duration": 30022,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 69,
+                            "line": 40
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Non-existent Button' })\u001b[22m\n\n\n  38 |     await page.goto('https://playwright.dev/');\n  39 |     // This will fail - button doesn't exist\n> 40 |     await page.getByRole('button', { name: 'Non-existent Button' }).click();\n     |                                                                     ^\n  41 |   });\n  42 | });\n  43 |\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:40:69"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:13.696Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-7fb84-k-non-existent-button-FAIL--chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-714a26ea70a2ffa0c234",
+              "file": "02-with-failures.spec.ts",
+              "line": 37,
+              "column": 7
+            },
+            {
+              "title": "should have correct page title (PASS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1276,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:15.867Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-2315bb2773cf45021136",
+              "file": "02-with-failures.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "should find non-existent element (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 5,
+                      "status": "failed",
+                      "duration": 6360,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:12:60",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 60,
+                          "line": 12
+                        },
+                        "snippet": "  10 |     await page.goto('https://playwright.dev/');\n  11 |     // This will fail - looking for element that doesn't exist\n> 12 |     await expect(page.getByTestId('non-existent-element')).toBeVisible();\n     |                                                            ^\n  13 |   });\n  14 |\n  15 |   test('should have wrong page title (FAIL)', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 60,
+                            "line": 12
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n\n\n  10 |     await page.goto('https://playwright.dev/');\n  11 |     // This will fail - looking for element that doesn't exist\n> 12 |     await expect(page.getByTestId('non-existent-element')).toBeVisible();\n     |                                                            ^\n  13 |   });\n  14 |\n  15 |   test('should have wrong page title (FAIL)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:12:60"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:16.344Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-e396b--non-existent-element-FAIL--firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 60,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-d1fe464e16363b176912",
+              "file": "02-with-failures.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "should have wrong page title (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 9447,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:18:24",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 24,
+                          "line": 18
+                        },
+                        "snippet": "  16 |     await page.goto('https://playwright.dev/');\n  17 |     // This will fail - wrong expected title\n> 18 |     await expect(page).toHaveTitle('Wrong Title That Does Not Exist');\n     |                        ^\n  19 |   });\n  20 |\n  21 |   test('should display main heading (PASS)', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 24,
+                            "line": 18
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n\n\n  16 |     await page.goto('https://playwright.dev/');\n  17 |     // This will fail - wrong expected title\n> 18 |     await expect(page).toHaveTitle('Wrong Title That Does Not Exist');\n     |                        ^\n  19 |   });\n  20 |\n  21 |   test('should display main heading (PASS)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:18:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:17.177Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-9fe17-have-wrong-page-title-FAIL--firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 24,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-6af5c8e95be3f56fd454",
+              "file": "02-with-failures.spec.ts",
+              "line": 15,
+              "column": 7
+            },
+            {
+              "title": "should display main heading (PASS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1034,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:17.597Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-d408adb97ab9ed270c95",
+              "file": "02-with-failures.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "should find element with wrong text (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 6430,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:29:74",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 74,
+                          "line": 29
+                        },
+                        "snippet": "  27 |     await page.goto('https://playwright.dev/');\n  28 |     // This will fail - looking for text that doesn't exist\n> 29 |     await expect(page.getByText('This text does not exist on the page')).toBeVisible();\n     |                                                                          ^\n  30 |   });\n  31 |\n  32 |   test('should have Get started link (PASS)', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 74,
+                            "line": 29
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n\n\n  27 |     await page.goto('https://playwright.dev/');\n  28 |     // This will fail - looking for text that doesn't exist\n> 29 |     await expect(page.getByText('This text does not exist on the page')).toBeVisible();\n     |                                                                          ^\n  30 |   });\n  31 |\n  32 |   test('should have Get started link (PASS)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:29:74"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:18.633Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-d7a19-ement-with-wrong-text-FAIL--firefox/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 74,
+                        "line": 29
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-bff0cd991368e0527c48",
+              "file": "02-with-failures.spec.ts",
+              "line": 26,
+              "column": 7
+            },
+            {
+              "title": "should have Get started link (PASS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1289,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:20.858Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-584372e16423a1e81627",
+              "file": "02-with-failures.spec.ts",
+              "line": 32,
+              "column": 7
+            },
+            {
+              "title": "should click non-existent button (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "timedOut",
+                      "duration": 30041,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 69,
+                            "line": 40
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Non-existent Button' })\u001b[22m\n\n\n  38 |     await page.goto('https://playwright.dev/');\n  39 |     // This will fail - button doesn't exist\n> 40 |     await page.getByRole('button', { name: 'Non-existent Button' }).click();\n     |                                                                     ^\n  41 |   });\n  42 | });\n  43 |\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:40:69"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:21.309Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-7fb84-k-non-existent-button-FAIL--firefox/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-387a50cad6486c1f5775",
+              "file": "02-with-failures.spec.ts",
+              "line": 37,
+              "column": 7
+            },
+            {
+              "title": "should have correct page title (PASS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 889,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:21.370Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-5bc2bdddff7b18c655cb",
+              "file": "02-with-failures.spec.ts",
+              "line": 4,
+              "column": 7
+            },
+            {
+              "title": "should find non-existent element (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 6049,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:12:60",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 60,
+                          "line": 12
+                        },
+                        "snippet": "  10 |     await page.goto('https://playwright.dev/');\n  11 |     // This will fail - looking for element that doesn't exist\n> 12 |     await expect(page.getByTestId('non-existent-element')).toBeVisible();\n     |                                                            ^\n  13 |   });\n  14 |\n  15 |   test('should have wrong page title (FAIL)', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 60,
+                            "line": 12
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByTestId('non-existent-element')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByTestId('non-existent-element')\u001b[22m\n\n\n  10 |     await page.goto('https://playwright.dev/');\n  11 |     // This will fail - looking for element that doesn't exist\n> 12 |     await expect(page.getByTestId('non-existent-element')).toBeVisible();\n     |                                                            ^\n  13 |   });\n  14 |\n  15 |   test('should have wrong page title (FAIL)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:12:60"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:22.385Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-e396b--non-existent-element-FAIL--webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 60,
+                        "line": 12
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-201f09b08a72702475e7",
+              "file": "02-with-failures.spec.ts",
+              "line": 9,
+              "column": 7
+            },
+            {
+              "title": "should have wrong page title (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 7167,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:18:24",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 24,
+                          "line": 18
+                        },
+                        "snippet": "  16 |     await page.goto('https://playwright.dev/');\n  17 |     // This will fail - wrong expected title\n> 18 |     await expect(page).toHaveTitle('Wrong Title That Does Not Exist');\n     |                        ^\n  19 |   });\n  20 |\n  21 |   test('should display main heading (PASS)', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 24,
+                            "line": 18
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected string: \u001b[32m\"\u001b[7mWrong Title That Does Not Exis\u001b[27mt\"\u001b[39m\nReceived string: \u001b[31m\"\u001b[7mFast and reliable end-to-end testing for modern web apps | Playwrigh\u001b[27mt\"\u001b[39m\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 5000ms\u001b[22m\n\u001b[2m    9 × unexpected value \"Fast and reliable end-to-end testing for modern web apps | Playwright\"\u001b[22m\n\n\n  16 |     await page.goto('https://playwright.dev/');\n  17 |     // This will fail - wrong expected title\n> 18 |     await expect(page).toHaveTitle('Wrong Title That Does Not Exist');\n     |                        ^\n  19 |   });\n  20 |\n  21 |   test('should display main heading (PASS)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:18:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:23.064Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-9fe17-have-wrong-page-title-FAIL--webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 24,
+                        "line": 18
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-421e3cfaab127bccab04",
+              "file": "02-with-failures.spec.ts",
+              "line": 15,
+              "column": 7
+            },
+            {
+              "title": "should display main heading (PASS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2349,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:23.634Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-3c0eda66ed6d4ec10a96",
+              "file": "02-with-failures.spec.ts",
+              "line": 21,
+              "column": 7
+            },
+            {
+              "title": "should find element with wrong text (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 5943,
+                      "error": {
+                        "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n",
+                        "stack": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:29:74",
+                        "location": {
+                          "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                          "column": 74,
+                          "line": 29
+                        },
+                        "snippet": "  27 |     await page.goto('https://playwright.dev/');\n  28 |     // This will fail - looking for text that doesn't exist\n> 29 |     await expect(page.getByText('This text does not exist on the page')).toBeVisible();\n     |                                                                          ^\n  30 |   });\n  31 |\n  32 |   test('should have Get started link (PASS)', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 74,
+                            "line": 29
+                          },
+                          "message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m\n\nLocator: getByText('This text does not exist on the page')\nExpected: visible\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('This text does not exist on the page')\u001b[22m\n\n\n  27 |     await page.goto('https://playwright.dev/');\n  28 |     // This will fail - looking for text that doesn't exist\n> 29 |     await expect(page.getByText('This text does not exist on the page')).toBeVisible();\n     |                                                                          ^\n  30 |   });\n  31 |\n  32 |   test('should have Get started link (PASS)', async ({ page }) => {\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:29:74"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:25.573Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-d7a19-ement-with-wrong-text-FAIL--webkit/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                        "column": 74,
+                        "line": 29
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-b180a07cfb135c3b6379",
+              "file": "02-with-failures.spec.ts",
+              "line": 26,
+              "column": 7
+            },
+            {
+              "title": "should have Get started link (PASS)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 1155,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:26.102Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-9468e46c6280aba9ffd4",
+              "file": "02-with-failures.spec.ts",
+              "line": 32,
+              "column": 7
+            },
+            {
+              "title": "should click non-existent button (FAIL)",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 5,
+                      "status": "timedOut",
+                      "duration": 30022,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts",
+                            "column": 69,
+                            "line": 40
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Non-existent Button' })\u001b[22m\n\n\n  38 |     await page.goto('https://playwright.dev/');\n  39 |     // This will fail - button doesn't exist\n> 40 |     await page.getByRole('button', { name: 'Non-existent Button' }).click();\n     |                                                                     ^\n  41 |   });\n  42 | });\n  43 |\n    at /Users/fishman/codebases/idanfishman/playwright-results-parser/sample/tests/02-with-failures.spec.ts:40:69"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-08-09T19:37:27.259Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/fishman/codebases/idanfishman/playwright-results-parser/sample/test-results/02-with-failures-With-Fail-7fb84-k-non-existent-button-FAIL--webkit/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ea52ec72593d1c3dc28e-85b391551d70e7723351",
+              "file": "02-with-failures.spec.ts",
+              "line": 37,
+              "column": 7
             }
-          ],
-          "id": "spec-1",
-          "file": "tests/auth.spec.ts",
-          "line": 1,
-          "column": 0
+          ]
         }
       ]
     }
   ],
+  "errors": [],
   "stats": {
-    "startTime": "2024-01-01T10:00:00.000Z",
-    "endTime": "2024-01-01T10:00:08.100Z",
-    "duration": 8100,
-    "expected": 2,
-    "unexpected": 1,
+    "startTime": "2025-08-09T19:37:13.350Z",
+    "duration": 43959.61,
+    "expected": 9,
     "skipped": 0,
+    "unexpected": 12,
     "flaky": 0
   }
 }

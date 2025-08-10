@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - **Build System**: Fixed build system to include ESM version
+- **Node Compatibility**: Dropped support for Node 18
 
 ## [1.0.1](https://github.com/idanfishman/playwright-results-parser/releases/tag/v1.0.1) - 2025-08-09
 

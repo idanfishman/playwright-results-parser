@@ -13,23 +13,6 @@ async function build() {
   console.log("Generating TypeScript declarations...");
   execSync("tsc --emitDeclarationOnly", { stdio: "inherit" });
 
-  // Build CommonJS version
-  console.log("Building CommonJS version...");
-  await esbuild.build({
-    entryPoints: ["src/index.ts"],
-    bundle: true,
-    minify: false,
-    sourcemap: true,
-    platform: "node",
-    target: ["node18", "node20", "node22"],
-    format: "cjs",
-    outfile: "dist/index.js",
-    external: [],
-    banner: {
-      js: "/* playwright-results-parser - MIT License */",
-    },
-  });
-
   // Build ESM version
   console.log("Building ESM version...");
   await esbuild.build({
@@ -40,7 +23,7 @@ async function build() {
     platform: "node",
     target: ["node18", "node20", "node22"],
     format: "esm",
-    outfile: "dist/index.mjs",
+    outfile: "dist/index.js",
     external: [],
     banner: {
       js: "/* playwright-results-parser - MIT License */",

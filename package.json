@@ -1,6 +1,6 @@
 {
   "name": "playwright-results-parser",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Core building block for Playwright test analysis tools - provides foundational parsing, normalization, and transformation APIs that other packages can build upon.",
   "keywords": [
     "automation",

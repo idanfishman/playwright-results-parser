@@ -21,7 +21,7 @@ async function build() {
     minify: false,
     sourcemap: true,
     platform: "node",
-    target: ["node18", "node20", "node22"],
+    target: ["node20", "node22"],
     format: "esm",
     outfile: "dist/index.js",
     external: [],

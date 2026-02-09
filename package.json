@@ -42,20 +42,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "4.0.17"
+    "zod": "4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "9.33.0",
     "@playwright/test": "^1.54.2",
     "@types/node": "24.2.1",
-    "@typescript-eslint/eslint-plugin": "8.39.0",
-    "@typescript-eslint/parser": "8.39.0",
+    "@typescript-eslint/eslint-plugin": "8.54.0",
+    "@typescript-eslint/parser": "8.54.0",
     "@vitest/coverage-v8": "3.2.4",
     "@vitest/ui": "3.2.4",
-    "esbuild": "0.25.8",
+    "esbuild": "0.27.3",
     "eslint": "9.33.0",
-    "prettier": "3.6.2",
-    "typescript": "5.9.2",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3",
     "vitest": "3.2.4"
   },
   "engines": {
